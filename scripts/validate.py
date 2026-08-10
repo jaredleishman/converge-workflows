@@ -57,13 +57,15 @@ def validate() -> None:
         ROOT / ".agents/plugins/marketplace.json",
         ROOT / ".claude-plugin/marketplace.json",
         ROOT / ".grok-plugin/marketplace.json",
+        ROOT / ".kimi-plugin/marketplace.json",
         PLUGIN / ".claude-plugin/plugin.json",
         PLUGIN / ".codex-plugin/plugin.json",
         PLUGIN / ".grok-plugin/plugin.json",
+        PLUGIN / ".kimi-plugin/plugin.json",
     ]
     documents = {path: load_json(path) for path in required_json}
 
-    for path in required_json[3:]:
+    for path in required_json[4:]:
         data = documents[path]
         if data.get("name") != "converge":
             fail(f"{path.relative_to(ROOT)} must name the plugin converge")
@@ -84,6 +86,13 @@ def validate() -> None:
         fail("Grok marketplace local source is incorrect")
     if codex_market["plugins"][0].get("source") != {"source": "local", "path": "./plugins/converge"}:
         fail("Codex marketplace local source is incorrect")
+
+    kimi_market = documents[ROOT / ".kimi-plugin/marketplace.json"]
+    kimi_entries = [p for p in kimi_market.get("plugins", []) if p.get("id") == "converge"]
+    if len(kimi_entries) != 1:
+        fail("Kimi marketplace must contain exactly one converge entry")
+    if kimi_entries[0].get("source") != "./plugins/converge":
+        fail("Kimi marketplace source must point to ./plugins/converge")
 
     expected_skills = {"plan", "build", "verify", "review", "remediate", "close", "status"}
     found: set[str] = set()

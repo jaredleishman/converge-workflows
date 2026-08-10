@@ -30,6 +30,10 @@ class PluginContractTests(unittest.TestCase):
             with self.subTest(path=path):
                 data = json.loads(path.read_text(encoding="utf-8"))
                 self.assertIn("converge", {p["name"] for p in data["plugins"]})
+        kimi = json.loads(
+            (ROOT / ".kimi-plugin/marketplace.json").read_text(encoding="utf-8")
+        )
+        self.assertIn("converge", {p["id"] for p in kimi["plugins"]})
 
     def test_plugin_versions_match(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
@@ -37,6 +41,7 @@ class PluginContractTests(unittest.TestCase):
             PLUGIN / ".claude-plugin/plugin.json",
             PLUGIN / ".codex-plugin/plugin.json",
             PLUGIN / ".grok-plugin/plugin.json",
+            PLUGIN / ".kimi-plugin/plugin.json",
         ]
         for path in manifests:
             with self.subTest(path=path):

@@ -2,12 +2,8 @@
   "name": "converge",
   "version": "0.2.2",
   "description": "Front-load software change planning and bound post-implementation review to one broad review and one closure review.",
-  "author": {
-    "name": "Jared Leishman",
-    "url": "https://github.com/jaredleishman"
-  },
+  "author": "Jared Leishman",
   "homepage": "https://github.com/jaredleishman/converge-workflows",
-  "repository": "https://github.com/jaredleishman/converge-workflows",
   "license": "MIT",
   "keywords": [
     "software-development",
@@ -22,18 +18,6 @@
     "shortDescription": "Front-load changes and bound review loops",
     "longDescription": "Scope, map, challenge, build, verify, and review software changes with one comprehensive review and one bounded closure review.",
     "developerName": "Jared Leishman",
-    "category": "Developer Tools",
-    "capabilities": [
-      "Interactive",
-      "Read",
-      "Write"
-    ],
-    "defaultPrompt": [
-      "Use Converge to plan this software change before implementation.",
-      "Review this candidate with one batch-complete review and a bounded closure pass."
-    ],
-    "websiteURL": "https://github.com/jaredleishman/converge-workflows",
-    "brandColor": "#2563EB",
-    "screenshots": []
+    "websiteURL": "https://github.com/jaredleishman/converge-workflows"
   }
 }

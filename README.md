@@ -40,6 +40,7 @@ The repository packages the same `skills/` tree for:
 - OpenAI Codex
 - xAI Grok Build
 - Anthropic Claude Code
+- Moonshot Kimi Code
 
 The host-neutral workflow lives under
 `plugins/converge/skills/_shared/`. Host manifests contain packaging metadata
@@ -79,6 +80,23 @@ codex plugin marketplace add jaredleishman/converge-workflows
 Then start Codex, open `/plugins`, choose the `converge-workflows` marketplace,
 and install `converge`.
 
+### Kimi Code
+
+From a local clone:
+
+```text
+/plugins marketplace .kimi-plugin/marketplace.json
+```
+
+or install the plugin directory directly:
+
+```text
+/plugins install ./plugins/converge
+```
+
+Then run `/reload` or start a new session. Manage the plugin through
+`/plugins`.
+
 ## Local development
 
 Clone the repository, then validate it:
@@ -94,6 +112,7 @@ Test the plugin without publishing:
 claude --plugin-dir ./plugins/converge
 grok --plugin-dir ./plugins/converge
 codex plugin marketplace add .
+kimi -p "/plugins install ./plugins/converge"   # or /plugins install interactively
 ```
 
 ## Typical use
@@ -142,6 +161,7 @@ you explicitly want the artifacts committed.
 .agents/plugins/marketplace.json       # Codex marketplace
 .claude-plugin/marketplace.json        # Claude Code marketplace
 .grok-plugin/marketplace.json          # Grok Build marketplace
+.kimi-plugin/marketplace.json          # Kimi Code marketplace
 plugins/converge/                      # installable plugin
 scripts/                               # repository validation/version tools
 tests/                                 # contract tests

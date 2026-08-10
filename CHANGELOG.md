@@ -2,6 +2,14 @@
 
 All notable changes to Converge are documented here.
 
+## [0.2.2] - 2026-08-10
+
+### Added
+
+- Kimi Code packaging: `plugins/converge/.kimi-plugin/plugin.json` manifest
+  and `.kimi-plugin/marketplace.json`, installable via `/plugins install` or
+  `/plugins marketplace`.
+
 ## [0.2.1] - 2026-08-10
 
 ### Added
