@@ -27,7 +27,7 @@ story. Warning signals include:
 - More than four substantial invariants are required
 - More than six acceptance criteria are required
 - Separate portions can ship safely and independently
-- Plan attackers find unrelated root-cause families
+- Challenge passes find unrelated root-cause families
 
 A large diff may still be coherent. A small diff may still combine incompatible
 state machines. Split by behavioral independence, not line count alone.

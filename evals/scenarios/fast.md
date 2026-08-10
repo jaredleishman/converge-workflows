@@ -7,6 +7,6 @@ Expected behavior:
 
 - Converge selects Fast.
 - The brief is short.
-- Plan Attack may be skipped.
+- Challenge may be skipped.
 - One review is enough.
 - No closure artifact exists when review is clean.

@@ -9,6 +9,7 @@ bounding post-implementation review.
 - `build` — implement the sealed Change Brief
 - `verify` — verify the exact candidate
 - `review` — the single broad, batch-complete review
+- `remediate` — fix the complete Round 1 batch by root-cause family
 - `close` — the single delta-only closure review
 - `status` — show workflow state and next action
 
@@ -23,4 +24,7 @@ One broad review → one remediation batch → one closure review
 ```
 
 Converge is intentionally skill-only. It does not install hooks, MCP servers,
-agents, background tasks, or credentialed integrations.
+agents, background tasks, or credentialed integrations. It bundles one
+standard-library script, `scripts/state_gate.py`, that skills invoke to check
+stage preconditions and consume the review budget; nothing runs outside a
+skill invocation.

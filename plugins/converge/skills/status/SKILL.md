@@ -6,6 +6,11 @@ disable-model-invocation: true
 
 # Converge Status
 
+When `.converge/state.yaml` exists, first run
+`python3 "<plugin-root>/scripts/state_gate.py" show`, where `<plugin-root>` is
+the installed plugin directory (`${CLAUDE_PLUGIN_ROOT}` in Claude Code), and
+treat its output as authoritative for budgets and the next allowed action.
+
 Read available files under `.converge/` and report:
 
 - Lane and current status

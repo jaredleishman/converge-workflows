@@ -7,6 +7,10 @@ argument-hint: "<remediated candidate or exact head>"
 
 # Converge Close
 
+Paths beginning with `../` resolve against this skill's installed folder,
+`<plugin-root>/skills/close/` (`${CLAUDE_PLUGIN_ROOT}/skills/close/` in Claude
+Code). `.converge/` paths resolve against the project root.
+
 Read:
 
 - `.converge/brief.md`
@@ -19,9 +23,11 @@ Read:
 
 Then:
 
-1. Confirm Round 1 used the broad-review budget, all remediation was applied as
-   one root-cause-grouped batch, Verify reran invalidated obligations, and
-   `closure_used` is `0`.
+1. Run `python3 "<plugin-root>/scripts/state_gate.py" check close` and stop
+   with its guidance if it refuses; it confirms the state is
+   `READY_FOR_CLOSURE` and `closure_used` is `0`. Confirm remediation was
+   applied as one root-cause-grouped batch (the Remediation Report in
+   `findings.md`) and that Verify reran the invalidated obligations.
 2. Review only the prior findings, remediation range, named invariant families,
    named sibling paths, and code introduced or invalidated by the fix.
 3. Do not restart an unconstrained full review of untouched code.
@@ -30,8 +36,9 @@ Then:
    `NEW_EVIDENCE`, `SCOPE_EXPANSION`, or `OUT_OF_SCOPE_FOLLOW_UP`.
 6. Apply the loop breaker. A distinct new original P1 family normally means
    `REPLAN` or `SPLIT`, not Review Round 3.
-7. Write `.converge/closure.md`, increment `closure_used` to `1`, update
-   `state.yaml`, and return `CLOSED`, `REPLAN`, `SPLIT`, or `BLOCKED`.
+7. Write `.converge/closure.md`, then run the state gate's `consume closure`
+   and record `CLOSED`, `REPLAN`, `SPLIT`, or `BLOCKED` via
+   `set-status --stage close`. Never edit budget fields by hand.
 
 A small fix-introduced issue may receive targeted confirmation after a targeted
 fix. That does not authorize another broad review.

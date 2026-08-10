@@ -1,9 +1,9 @@
 .PHONY: validate test check
 
 validate:
-	python scripts/validate.py
+	python3 scripts/validate.py
 
 test:
-	python -m unittest discover -s tests -v
+	python3 -m unittest discover -s tests -v
 
 check: validate test

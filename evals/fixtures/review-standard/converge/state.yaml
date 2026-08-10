@@ -1,0 +1,33 @@
+schema_version: 1
+
+lane: standard
+stage: verify
+status: INTERNALLY_VERIFIED
+
+request:
+  source: eval-fixture
+  identifier: review-standard
+
+candidate:
+  kind: worktree
+  repository: null
+  base_sha: null
+  head_sha: null
+  patch_sha256: null
+  dirty_paths: []
+  pull_request: null
+
+review_budget:
+  broad_max: 1
+  broad_used: 0
+  closure_max: 1
+  closure_used: 0
+
+decision:
+  replan_required: false
+  split_required: false
+  blocked_reason: null
+
+findings:
+  open: []
+  closed: []

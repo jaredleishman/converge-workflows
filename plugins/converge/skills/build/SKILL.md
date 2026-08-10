@@ -7,6 +7,10 @@ argument-hint: "[brief path or implementation instruction]"
 
 # Converge Build
 
+Paths beginning with `../` resolve against this skill's installed folder,
+`<plugin-root>/skills/build/` (`${CLAUDE_PLUGIN_ROOT}/skills/build/` in Claude
+Code). `.converge/` paths resolve against the project root.
+
 Read:
 
 - `.converge/brief.md`
@@ -17,7 +21,10 @@ Read:
 
 Then:
 
-1. Confirm the state is `PLANNED` and the split decision is `ONE_CHANGE`.
+1. Run `python3 "<plugin-root>/scripts/state_gate.py" check build` and stop
+   with its guidance if it refuses. Confirm the split decision is
+   `ONE_CHANGE`, then record `BUILDING` via
+   `set-status BUILDING --stage build`.
 2. Follow repository-native instructions, helpers, conventions, and tests.
 3. Implement the smallest behavioral change that satisfies the brief.
 4. Maintain the Implementation Crosswalk in `brief.md`: each invariant and
@@ -31,7 +38,8 @@ Then:
    Challenge step before proceeding. The failure model changed.
 7. Run cheap local checks while building, but leave authoritative evidence to
    Verify.
-8. End with `READY_FOR_VERIFY` or `BLOCKED`.
+8. End with `READY_FOR_VERIFY` or `BLOCKED`, recorded via the state gate's
+   `set-status`.
 
 Do not commit, push, open a pull request, deploy, or access production unless the
 user separately authorizes it.

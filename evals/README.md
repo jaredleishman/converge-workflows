@@ -16,3 +16,15 @@ Replay historical changes in three lanes and record:
 - Escaped defects found after merge
 
 Compare the original workflow, Converge, and a minimal build-plus-review control.
+
+## Runnable fixtures
+
+`fixtures/` contains seeded scenarios with known defect families and a grader:
+
+- `fixtures/review-standard/` — measures whether the `review` skill is
+  batch-complete and sweeps sibling paths. See its `INSTRUCTIONS.md`.
+- `grade_review.py` — grades a produced `findings.md` against a fixture's
+  `expected.json`. Substring markers make PASS necessary, not sufficient.
+
+The scenario files under `scenarios/` remain descriptive replay guides for
+evaluating full workflow runs on real changes.

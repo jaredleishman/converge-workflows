@@ -13,7 +13,7 @@ Default process:
 Short acceptance list → Build → Verify → one Review
 ```
 
-Plan Attack and Close are optional unless evidence requires them.
+Challenge and Close are optional unless evidence requires them.
 
 ## Standard
 
@@ -24,7 +24,7 @@ Default budgets:
 
 - Important invariants: at most 4
 - Acceptance criteria: at most 6
-- Independent plan attackers: 1
+- Independent Challenge passes: 1
 - Coverage matrices: 0 unless behavior is genuinely combinatorial
 - Broad implementation reviews: 1
 - Closure reviews: 0 or 1
@@ -42,7 +42,7 @@ or when impact is independently catastrophic.
 
 Critical additions may include:
 
-- Two independent plan attacks using different models or contexts
+- Two independent Challenge passes using different models or contexts
 - One or two explicit coverage matrices
 - Same-head parallel implementation reviews synthesized into one finding batch
 - Blind code-first review when contract anchoring is a material concern

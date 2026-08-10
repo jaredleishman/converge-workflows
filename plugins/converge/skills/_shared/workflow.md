@@ -10,6 +10,7 @@ Plan: Scope → Map → Challenge → Split decision
 Build
 Verify
 Review: one broad, batch-complete review
+Remediate: fix the complete finding batch by root-cause family, then re-verify
 Close: one delta-only closure review, only when Review found blockers
 Outcome: CLOSED, REPLAN, SPLIT, or BLOCKED
 ```
@@ -22,6 +23,23 @@ substantive remediation. A third broad review is not the default next step.
 When closure finds a distinct original blocker family that the first review and
 plan both missed, stop serial patching. Return `REPLAN` or `SPLIT` unless the
 user explicitly chooses a new contract and review cycle.
+
+The budget is enforced mechanically by the bundled state gate (see the
+artifact protocol). Skills check preconditions and consume budget through the
+gate; budget fields in `state.yaml` are never edited by hand.
+
+## Sealing
+
+The contract seals when Plan ends `PLANNED`. The sealed sections of
+`brief.md` are Outcome, Non-goals, Dangerous false successes, Invariants,
+Acceptance criteria, and the Split decision.
+
+Build, Verify, Remediate, and reviewers append to the Map, Implementation
+Crosswalk, Verification Evidence, findings, and closure sections; they do not
+edit sealed sections. Any change to a sealed section is a contract amendment:
+it must be labeled as such, routed back through Plan's Challenge step, and it
+starts a new contract with a new review cycle rather than silently reusing the
+current budget.
 
 ## One source of truth
 

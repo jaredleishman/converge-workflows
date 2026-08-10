@@ -85,7 +85,7 @@ def validate() -> None:
     if codex_market["plugins"][0].get("source") != {"source": "local", "path": "./plugins/converge"}:
         fail("Codex marketplace local source is incorrect")
 
-    expected_skills = {"plan", "build", "verify", "review", "close", "status"}
+    expected_skills = {"plan", "build", "verify", "review", "remediate", "close", "status"}
     found: set[str] = set()
     for path in sorted((PLUGIN / "skills").glob("*/SKILL.md")):
         meta = frontmatter(path)
@@ -106,6 +106,9 @@ def validate() -> None:
     for rel in required_shared:
         if not (PLUGIN / "skills/_shared" / rel).is_file():
             fail(f"missing shared file: {rel}")
+
+    if not (PLUGIN / "scripts/state_gate.py").is_file():
+        fail("missing state gate script: plugins/converge/scripts/state_gate.py")
 
     review_policy = (PLUGIN / "skills/_shared/review-policy.md").read_text(encoding="utf-8")
     required_policy_text = [

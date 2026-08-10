@@ -16,9 +16,15 @@ by using this:
 Plan: Scope → Map → Challenge → Split decision
 Build → Verify
 Review: one batch-complete broad review
+Remediate: fix the whole batch by root-cause family → re-verify
 Close: one delta-only closure review when needed
 Outcome: CLOSED, REPLAN, SPLIT, or BLOCKED
 ```
+
+The review budget is enforced mechanically: skills call a bundled
+standard-library state gate (`plugins/converge/scripts/state_gate.py`) that
+checks stage preconditions and consumes the one-broad-plus-one-closure budget
+recorded in `.converge/state.yaml`.
 
 ## Why Converge
 
@@ -78,8 +84,8 @@ and install `converge`.
 Clone the repository, then validate it:
 
 ```bash
-python scripts/validate.py
-python -m unittest discover -s tests -v
+python3 scripts/validate.py
+python3 -m unittest discover -s tests -v
 ```
 
 Test the plugin without publishing:
@@ -97,7 +103,9 @@ codex plugin marketplace add .
 /converge:build
 /converge:verify
 /converge:review
-/converge:close   # only when Review produced blockers
+/converge:remediate   # only when Review produced blockers
+/converge:verify      # rerun the invalidated obligations
+/converge:close
 ```
 
 Names vary slightly by host, but the skill folders and workflow artifacts are
@@ -142,7 +150,7 @@ evals/                                 # replay scenarios
 
 ## Version
 
-Current version: `0.1.0`
+Current version: `0.2.0`
 
 ## License
 

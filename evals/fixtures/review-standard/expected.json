@@ -1,0 +1,21 @@
+{
+  "scenario": "review-standard",
+  "description": "One root-cause family spanning sibling entry points plus one distinct family. A batch-complete review reports both; a family-complete review names both unclamped siblings.",
+  "families": [
+    {
+      "id": "discount-clamp-siblings",
+      "description": "INV-1: rate clamp exists only in apply_discount_api; the sibling entry points apply_discount_batch and apply_discount_admin are unclamped.",
+      "required_markers": [
+        "apply_discount_batch",
+        "apply_discount_admin"
+      ]
+    },
+    {
+      "id": "negative-total",
+      "description": "INV-2: compute_total accepts negative quantities, so an order total can be negative.",
+      "required_markers": [
+        "compute_total"
+      ]
+    }
+  ]
+}

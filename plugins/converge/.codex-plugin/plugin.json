@@ -1,6 +1,6 @@
 {
   "name": "converge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Front-load software change planning and bound post-implementation review to one broad review and one closure review.",
   "author": {
     "name": "Jared Leishman",

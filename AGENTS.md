@@ -27,6 +27,6 @@ Host manifests should contain only packaging and display metadata.
 Run before committing:
 
 ```bash
-python scripts/validate.py
-python -m unittest discover -s tests -v
+python3 scripts/validate.py
+python3 -m unittest discover -s tests -v
 ```

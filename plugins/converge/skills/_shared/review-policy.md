@@ -40,8 +40,9 @@ blocking P1.
 
 ## Remediation
 
-Fix the complete finding batch by root-cause family. Do not patch only the cited
-example. For each finding record:
+The `remediate` skill owns this step. Fix the complete finding batch by
+root-cause family. Do not patch only the cited example. For each finding record
+in the Remediation Report:
 
 - Violated invariant
 - Affected sibling paths
