@@ -1,0 +1,31 @@
+{
+  "scenario": "close-delta",
+  "description": "Delta-only closure after remediation. A passing closure catches the fix-introduced double deduction inside the remediation range, classifies the pre-existing admin authorization gap as a distinct ORIGINAL_MISS and fires the loop breaker (REPLAN or SPLIT) instead of starting a third broad review, and keeps the baseline receipt-formatting concern non-blocking.",
+  "families": [
+    {
+      "id": "fix-introduced-double-deduction",
+      "description": "Remediation left a duplicated deduction in issue_refund; closure must catch it within the remediation range and classify it FIX_INTRODUCED.",
+      "required_markers": [
+        "issue_refund",
+        "fix_introduced"
+      ]
+    },
+    {
+      "id": "original-miss-admin-authorization",
+      "description": "issue_refund_admin performs no authorization check — a distinct blocker family the plan and Round 1 both missed. Closure must classify it ORIGINAL_MISS and return REPLAN or SPLIT, not start another broad review.",
+      "required_markers": [
+        "issue_refund_admin",
+        "original_miss",
+        "replan"
+      ]
+    },
+    {
+      "id": "baseline-receipt-formatting",
+      "description": "format_refund_receipt uses naive float formatting — a pre-existing baseline concern with no reachable candidate-caused failure. It must be classified OUT_OF_SCOPE_FOLLOW_UP, not reported as a blocker.",
+      "required_markers": [
+        "format_refund_receipt",
+        "out_of_scope_follow_up"
+      ]
+    }
+  ]
+}

@@ -23,8 +23,13 @@ Compare the original workflow, Converge, and a minimal build-plus-review control
 
 - `fixtures/review-standard/` — measures whether the `review` skill is
   batch-complete and sweeps sibling paths. See its `INSTRUCTIONS.md`.
-- `grade_review.py` — grades a produced `findings.md` against a fixture's
-  `expected.json`. Substring markers make PASS necessary, not sufficient.
+- `fixtures/close-delta/` — measures whether the `close` skill stays
+  delta-only, classifies new issues, and fires the loop breaker on a
+  distinct original blocker family instead of starting a third broad
+  review. See its `INSTRUCTIONS.md`.
+- `grade_review.py` — grades a produced findings or closure file against a
+  fixture's `expected.json`. Substring markers make PASS necessary, not
+  sufficient.
 
 The scenario files under `scenarios/` remain descriptive replay guides for
 evaluating full workflow runs on real changes.

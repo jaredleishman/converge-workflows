@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Grade a Converge review run against a fixture's expected finding families.
+"""Grade a Converge review or closure run against a fixture's expected families.
 
 Usage:
 
     python3 evals/grade_review.py evals/fixtures/review-standard <findings.md>
+    python3 evals/grade_review.py evals/fixtures/close-delta <closure.md>
 
-Checks that the produced findings file is batch-complete (every expected
+Checks that the produced artifact is batch-complete (every expected
 root-cause family is reported) and family-complete (every required sibling
-path marker for a family appears). Markers are case-insensitive substring
-checks: passing is necessary, not sufficient — read the findings before
-trusting a PASS.
+path or classification marker for a family appears). Markers are
+case-insensitive substring checks: passing is necessary, not sufficient —
+read the artifact before trusting a PASS.
 """
 
 from __future__ import annotations

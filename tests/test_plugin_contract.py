@@ -117,6 +117,30 @@ class StateGateTests(unittest.TestCase):
         self.state.unlink()
         self.assertEqual(1, self.run_gate("check", "build"))
 
+    def test_malformed_line_is_rejected(self) -> None:
+        with self.state.open("a", encoding="utf-8") as fh:
+            fh.write("\n- a block list item the constrained schema cannot hold\n")
+        self.assertEqual(1, self.run_gate("show"))
+
+    def test_orphan_nested_line_is_rejected(self) -> None:
+        text = self.state.read_text(encoding="utf-8")
+        self.state.write_text(
+            text.replace("status: PLANNING", "status: PLANNING\n  stray: 1"),
+            encoding="utf-8",
+        )
+        self.assertEqual(1, self.run_gate("show"))
+
+    def test_third_level_nesting_is_rejected(self) -> None:
+        text = self.state.read_text(encoding="utf-8")
+        self.state.write_text(
+            text.replace(
+                "review_budget:\n  broad_max: 1",
+                "review_budget:\n  broad:\n    max: 1",
+            ),
+            encoding="utf-8",
+        )
+        self.assertEqual(1, self.run_gate("show"))
+
 
 if __name__ == "__main__":
     unittest.main()

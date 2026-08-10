@@ -9,7 +9,8 @@ around.
 
 Standard library only. Parses the constrained state.yaml schema shipped
 in `skills/_shared/templates/state.yaml`; it is not a general YAML
-parser.
+parser. Lines that do not fit the constrained schema are rejected
+loudly instead of being silently ignored.
 """
 
 from __future__ import annotations
@@ -64,14 +65,22 @@ class GateError(RuntimeError):
 
 
 def parse_state(text: str) -> dict:
-    """Parse the constrained two-level state.yaml schema into a flat dict."""
+    """Parse the constrained two-level state.yaml schema into a flat dict.
+
+    Any non-empty, non-comment line that does not fit the schema raises
+    GateError rather than being dropped, so a hand-edited or corrupted
+    state file fails loudly instead of being misread.
+    """
     data: dict[str, object] = {}
     section: str | None = None
-    for raw in text.splitlines():
+    for lineno, raw in enumerate(text.splitlines(), 1):
         if not raw.strip() or raw.lstrip().startswith("#"):
             continue
         if ":" not in raw:
-            continue
+            raise GateError(
+                f"state file line {lineno} is not a 'key: value' pair: "
+                f"{raw.strip()!r}"
+            )
         indent = len(raw) - len(raw.lstrip())
         key, _, value = raw.strip().partition(":")
         key, value = key.strip(), value.strip()
@@ -81,7 +90,17 @@ def parse_state(text: str) -> dict:
                 continue
             section = None
             data[key] = _coerce(value)
-        elif section is not None and value != "":
+        else:
+            if section is None:
+                raise GateError(
+                    f"state file line {lineno} is nested but follows no "
+                    f"section header: {raw.strip()!r}"
+                )
+            if value == "":
+                raise GateError(
+                    f"state file line {lineno} opens an unsupported third "
+                    f"level of nesting: {raw.strip()!r}"
+                )
             data[f"{section}.{key}"] = _coerce(value)
     return data
 

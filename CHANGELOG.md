@@ -2,6 +2,25 @@
 
 All notable changes to Converge are documented here.
 
+## [0.2.1] - 2026-08-10
+
+### Added
+
+- Runnable closure eval: `evals/fixtures/close-delta/` seeds a remediated
+  candidate with a fix-introduced defect, a distinct original blocker family,
+  and a baseline concern, graded for delta-only scope, issue classification,
+  and loop-breaker behavior (`REPLAN`/`SPLIT`, no third broad review).
+- `evals/scenarios/loop-breaker.md` replay guide for closure runs that are
+  tempted to reopen a broad review.
+- State gate parser tests for malformed, orphaned, and over-nested state
+  file lines.
+
+### Changed
+
+- The state gate now rejects state file lines that do not fit the
+  constrained schema instead of silently ignoring them, so a hand-edited or
+  corrupted `state.yaml` fails loudly.
+
 ## [0.2.0] - 2026-08-10
 
 ### Added
