@@ -1,0 +1,11 @@
+{
+  "name": "converge",
+  "version": "0.1.0",
+  "description": "Front-load software change planning and bound post-implementation review to one broad review and one closure review.",
+  "author": {
+    "name": "Jared Leishman"
+  },
+  "homepage": "https://github.com/jaredleishman/converge-workflows",
+  "repository": "https://github.com/jaredleishman/converge-workflows",
+  "license": "MIT"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "converge-workflows",
+  "description": "Front-loaded software change workflows with bounded review closure.",
+  "owner": {
+    "name": "Jared Leishman"
+  },
+  "plugins": [
+    {
+      "name": "converge",
+      "description": "Front-loaded change planning with a bounded two-round review policy.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./plugins/converge"
+      },
+      "version": "0.1.0",
+      "author": {
+        "name": "Jared Leishman"
+      },
+      "homepage": "https://github.com/jaredleishman/converge-workflows",
+      "keywords": [
+        "converge",
+        "software planning",
+        "code review",
+        "pull request review"
+      ]
+    }
+  ]
+}

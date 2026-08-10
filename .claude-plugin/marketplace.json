@@ -1,0 +1,20 @@
+{
+  "name": "converge-workflows",
+  "owner": {
+    "name": "Jared Leishman"
+  },
+  "plugins": [
+    {
+      "name": "converge",
+      "source": "./plugins/converge",
+      "description": "Front-loaded change planning with a bounded two-round review policy.",
+      "version": "0.1.0",
+      "category": "development",
+      "tags": [
+        "planning",
+        "review",
+        "software-development"
+      ]
+    }
+  ]
+}

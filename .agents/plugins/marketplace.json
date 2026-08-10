@@ -1,0 +1,23 @@
+{
+  "name": "converge-workflows",
+  "interface": {
+    "displayName": "Converge Workflows"
+  },
+  "plugins": [
+    {
+      "name": "converge",
+      "source": {
+        "source": "local",
+        "path": "./plugins/converge"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL",
+        "products": [
+          "CODEX"
+        ]
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
