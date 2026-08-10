@@ -2,6 +2,18 @@
 
 All notable changes to Converge are documented here.
 
+## [0.2.3] - 2026-08-10
+
+### Changed
+
+- Plan now runs in two phases. Phase 1 is a conversational interview: short
+  rounds of code-grounded questions, ending in a Direction Summary the user
+  must explicitly approve. Phase 2 (mapping, Challenge, brief and state
+  artifacts) does not start until that approval, and returns to Phase 1 when
+  mapping contradicts the approved direction.
+- `workflow.md` and the README flow diagrams show the interview and
+  direction-approval gate inside Plan.
+
 ## [0.2.2] - 2026-08-10
 
 ### Added

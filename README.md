@@ -13,7 +13,7 @@ review → fix → broad review → fix → broad review → ...
 by using this:
 
 ```text
-Plan: Scope → Map → Challenge → Split decision
+Plan: Interview → Direction approval → Map → Challenge → Split decision
 Build → Verify
 Review: one batch-complete broad review
 Remediate: fix the whole batch by root-cause family → re-verify

@@ -6,7 +6,7 @@ path discovery and failure analysis before implementation.
 ## The flow
 
 ```text
-Plan: Scope → Map → Challenge → Split decision
+Plan: Interview → Direction approval → Map → Challenge → Split decision
 Build
 Verify
 Review: one broad, batch-complete review
@@ -14,6 +14,10 @@ Remediate: fix the complete finding batch by root-cause family, then re-verify
 Close: one delta-only closure review, only when Review found blockers
 Outcome: CLOSED, REPLAN, SPLIT, or BLOCKED
 ```
+
+Plan is gated on the user: it opens with an interview and does not map,
+challenge, or write artifacts until the user explicitly approves a Direction
+Summary in chat.
 
 ## Central rule
 
