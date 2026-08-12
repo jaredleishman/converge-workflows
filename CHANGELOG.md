@@ -4,6 +4,8 @@ All notable changes to Converge are documented here.
 
 ## Unreleased
 
+## [0.2.4] - 2026-08-11
+
 ### Added
 
 - Legal state transitions, resumable blocked work, interrupted Build support,
