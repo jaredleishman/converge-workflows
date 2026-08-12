@@ -2,6 +2,29 @@
 
 All notable changes to Converge are documented here.
 
+## Unreleased
+
+### Added
+
+- Legal state transitions, resumable blocked work, interrupted Build support,
+  ordinary Verify-to-Build correction, and a finite targeted closure-fix path.
+- Local Git worktree candidate capture and drift checking, plus caller-resolved
+  commit and pull-request candidate recording.
+- Non-waivable baseline regression guarantees and temporal evidence rules for
+  closure classifications.
+
+### Changed
+
+- Review and Close outcomes now consume their budget in the same state update;
+  the standalone budget-consumption command is removed.
+- State lists support JSON-style non-empty inline values and finding IDs are
+  used as workflow preconditions.
+- Candidate identity is write-once within each Verify attempt, and Closure now
+  gives blocking new evidence an explicit loop-breaker outcome.
+- Fast-lane guidance is more explicit, one active contract per project root is
+  documented, and evaluation guidance separates protocol checks from efficacy
+  evidence.
+
 ## [0.2.3] - 2026-08-10
 
 ### Changed

@@ -18,13 +18,16 @@ Build → Verify
 Review: one batch-complete broad review
 Remediate: fix the whole batch by root-cause family → re-verify
 Close: one delta-only closure review when needed
+Targeted correction: one fix + confirmation for a small remediation-caused
+  defect or an incomplete prior finding family
 Outcome: CLOSED, REPLAN, SPLIT, or BLOCKED
 ```
 
-The review budget is enforced mechanically: skills call a bundled
-standard-library state gate (`plugins/converge/scripts/state_gate.py`) that
-checks stage preconditions and consumes the one-broad-plus-one-closure budget
-recorded in `.converge/state.yaml`.
+Inside an invoked Converge workflow, the review budget and legal state
+transitions are enforced mechanically by a bundled standard-library state gate
+(`plugins/converge/scripts/state_gate.py`). Review and Close outcomes consume
+their one-broad-plus-one-closure budget in the same state update. The plugin is
+skill-only and does not intercept freehand actions outside Converge.
 
 ## Why Converge
 
@@ -33,7 +36,7 @@ usually mean the plan omitted an invariant, the remediation expanded scope, the
 change should be split, or review is expanding the contract. Converge makes
 that a workflow decision instead of automatically starting another review loop.
 
-## Supported hosts
+## Packaged hosts
 
 The repository packages the same `skills/` tree for:
 
@@ -45,6 +48,10 @@ The repository packages the same `skills/` tree for:
 The host-neutral workflow lives under
 `plugins/converge/skills/_shared/`. Host manifests contain packaging metadata
 only.
+
+Repository validation checks those packages structurally. A release should
+record which host install/load smoke tests were actually run; manifest success
+alone is not a cross-host runtime claim.
 
 ## Install
 
@@ -125,6 +132,9 @@ kimi -p "/plugins install ./plugins/converge"   # or /plugins install interactiv
 /converge:remediate   # only when Review produced blockers
 /converge:verify      # rerun the invalidated obligations
 /converge:close
+# only if Close records TARGETED_FIX:
+/converge:remediate
+/converge:verify
 ```
 
 Names vary slightly by host, but the skill folders and workflow artifacts are
@@ -145,6 +155,9 @@ Converge uses a small project-local protocol:
 The plugin recommends excluding `.converge/` through `.git/info/exclude` unless
 you explicitly want the artifacts committed.
 
+One project root or worktree supports one active `.converge/` contract. Use
+separate worktrees for parallel or stacked changes.
+
 ## Development principles
 
 - Keep the Standard lane lightweight.
@@ -154,6 +167,10 @@ you explicitly want the artifacts committed.
 - Do not silently expand scope during review.
 - A third broad review is a signal to replan or split, not the default next
   step.
+- Prefer Fast when its low-risk conditions are supported; do not make a small
+  change pay Standard-lane ceremony.
+- Treat fixture passes as protocol checks, not proof that Converge reduces
+  real-world cycles or escaped defects.
 
 ## Repository layout
 
@@ -170,7 +187,7 @@ evals/                                 # replay scenarios
 
 ## Version
 
-Current version: `0.2.0`
+Current version: `0.2.3`
 
 ## License
 

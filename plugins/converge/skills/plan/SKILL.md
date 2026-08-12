@@ -61,6 +61,10 @@ when the request is trivially unambiguous or the user explicitly asks to
 skip the interview ("just plan it"). Even then, show the summary and get the
 yes before Phase 2.
 
+Bias toward the Fast lane when repository evidence satisfies every Fast
+condition. Fast still needs explicit Direction Summary approval, but do not
+manufacture interview rounds after the direction is already clear.
+
 ## Phase 2 — Contract
 
 1. Read the repository's instructions and obtain the smallest relevant code
@@ -69,8 +73,10 @@ yes before Phase 2.
    effects, async/retry paths, concurrency boundaries, and rollout boundaries.
 3. Confirm the lane proposed in the Direction Summary against the actual
    impact and failure model; tell the user if mapping changed the answer.
-4. Write the smallest coherent proposed change, up to four important invariants
-   and six acceptance criteria for Standard work.
+4. Write the smallest coherent proposed change. Include the shared baseline
+   guarantees as non-waivable regression boundaries. Fast uses at most two
+   important invariants and three acceptance criteria; Standard uses at most
+   four important invariants and six acceptance criteria.
 5. Perform a code-aware Challenge pass focused only on missing surfaces,
    defeating failure sequences, unsupported assumptions, and split candidates.
    Prefer an independent context or different model when available.
@@ -83,9 +89,14 @@ yes before Phase 2.
    appropriate; do not silently change committed ignore files.
 8. End with `PLANNED`, `SPLIT`, or `BLOCKED`, recorded via
    `python3 "<plugin-root>/scripts/state_gate.py" set-status <STATUS> --stage plan`.
+   `BLOCKED` also requires `--reason`. A terminal `REPLAN` or `SPLIT` starts a
+   new contract from a newly created state file; do not reset the current file.
    Ending `PLANNED` seals the contract sections of the brief (see
    `workflow.md`); later changes to them are labeled contract amendments that
    return through this skill.
 
 Do not implement unless the user explicitly requested continued execution.
 Do not propose unrelated cleanup or generalized hardening.
+
+One project root or worktree supports one active `.converge/` contract. Direct
+parallel or stacked changes to separate worktrees instead of overwriting state.

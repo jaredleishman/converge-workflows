@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synchronize the Converge version across package manifests."""
+"""Synchronize the Converge version across package manifests and README."""
 
 from __future__ import annotations
 
@@ -37,6 +37,17 @@ def main() -> int:
         else:
             data["version"] = args.version
         path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    readme = ROOT / "README.md"
+    readme_text = readme.read_text(encoding="utf-8")
+    readme_text, count = re.subn(
+        r"(?m)^Current version: `[^`]+`$",
+        f"Current version: `{args.version}`",
+        readme_text,
+        count=1,
+    )
+    if count != 1:
+        raise RuntimeError("README.md must contain exactly one Current version line")
+    readme.write_text(readme_text, encoding="utf-8")
     print(f"Synchronized Converge version to {args.version}")
     return 0
 

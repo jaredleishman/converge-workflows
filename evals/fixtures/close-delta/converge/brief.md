@@ -24,6 +24,13 @@ most once per order.
   the order's remaining total.
 - A refund path that can refund the same order twice.
 
+## Baseline guarantees
+
+- `BG-1`: Administrative refund entry points preserve authorization boundaries.
+- `BG-2`: Confidentiality, privacy, and secret handling are not weakened.
+- `BG-3`: Refund state and money-moving effects are not corrupted, duplicated, or silently lost.
+- `BG-4`: Existing compatibility and repository policy remain intact.
+
 ## Map
 
 ### Entry points

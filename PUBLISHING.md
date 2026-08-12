@@ -21,6 +21,12 @@ python -m unittest discover -s tests -v
 git status --short
 ```
 
+The automated checks validate host packaging structurally. Before claiming
+runtime support, smoke-test installation and skill discovery on each available
+host and record any host that was not tested. Do not turn an unavailable host
+into a release blocker unless the release explicitly promises current runtime
+certification for it.
+
 To release a new version:
 
 ```bash

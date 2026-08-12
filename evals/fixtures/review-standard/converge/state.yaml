@@ -1,15 +1,15 @@
 schema_version: 1
 
 lane: standard
-stage: verify
-status: INTERNALLY_VERIFIED
+stage: build
+status: READY_FOR_VERIFY
 
 request:
   source: eval-fixture
   identifier: review-standard
 
 candidate:
-  kind: worktree
+  kind: unset
   repository: null
   base_sha: null
   head_sha: null
@@ -27,6 +27,7 @@ decision:
   replan_required: false
   split_required: false
   blocked_reason: null
+  resume_status: null
 
 findings:
   open: []

@@ -69,6 +69,11 @@ None.
 - Paths intentionally unchanged: `issue_refund_admin`,
   `format_refund_receipt`
 
+The intentionally unchanged `issue_refund_admin` path is therefore present at
+the Round 1 candidate. Any newly supported authorization failure there is
+temporally an `ORIGINAL_MISS`, not `FIX_INTRODUCED`, and violates baseline
+guarantee `BG-1`.
+
 ### REV-2 — missing double-refund guard
 
 - Violated invariant: `INV-2`

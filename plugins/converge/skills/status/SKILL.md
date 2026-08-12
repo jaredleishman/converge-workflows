@@ -22,5 +22,10 @@ Read available files under `.converge/` and report:
 - Missing or inconsistent artifacts
 - The single next allowed action
 
+Also report that one project root supports one active contract. If the state is
+`BLOCKED`, include the recorded reason and resume status. If it is
+`TARGETED_FIX` or `READY_FOR_TARGETED_CONFIRMATION`, state explicitly that broad
+and closure review cannot reopen.
+
 Do not modify code or advance the workflow. If no `.converge/` state exists,
 report that `plan` is the normal starting point.

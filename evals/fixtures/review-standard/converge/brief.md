@@ -23,6 +23,13 @@ admin console, and order totals are computed from line items.
   excessive rate.
 - A checkout that returns a plausible-looking total for malformed line items.
 
+## Baseline guarantees
+
+- `BG-1`: Authorization and tenant-isolation boundaries are not weakened.
+- `BG-2`: Confidentiality, privacy, and secret handling are not weakened.
+- `BG-3`: Order data and billing effects are not corrupted or silently lost.
+- `BG-4`: Existing compatibility and repository policy remain intact.
+
 ## Map
 
 ### Entry points

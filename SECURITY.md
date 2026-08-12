@@ -1,6 +1,6 @@
 # Security
 
-Converge is intentionally a skill-only plugin. Version 0.1.0 ships no MCP
+Converge is intentionally a skill-only plugin. It ships no MCP
 servers, hooks, background services, credential handlers, or automatic network
 operations.
 

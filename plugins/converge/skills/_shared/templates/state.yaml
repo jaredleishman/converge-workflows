@@ -27,6 +27,7 @@ decision:
   replan_required: false
   split_required: false
   blocked_reason: null
+  resume_status: null
 
 findings:
   open: []

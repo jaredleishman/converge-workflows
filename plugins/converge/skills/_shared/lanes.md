@@ -15,6 +15,16 @@ Short acceptance list → Build → Verify → one Review
 
 Challenge and Close are optional unless evidence requires them.
 
+Bias toward Fast when all Fast conditions are supported by repository evidence.
+Keep its Direction Summary to one concise confirmation unless a real product
+decision remains. Use at most two important invariants and three acceptance
+criteria; write `Not applicable` for irrelevant map boundaries instead of
+expanding the brief with speculative analysis.
+
+If Round 1 finds a P1 after Fast skipped Challenge, record a lane-misjudgment
+signal in `findings.md` and the evaluation log. This is evidence for future lane
+selection, not permission to restart review.
+
 ## Standard
 
 Use for most meaningful backend or product changes that span several paths but

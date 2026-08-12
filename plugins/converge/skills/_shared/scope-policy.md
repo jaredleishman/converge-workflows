@@ -36,7 +36,28 @@ state machines. Split by behavioral independence, not line count alone.
 
 A review finding blocks the current change only when it has a concrete reachable
 path, material impact, a causal relationship to the candidate, and a violation
-of the sealed brief or a regression introduced by the change.
+of the sealed brief, a non-waivable baseline guarantee, or a regression
+introduced by the change.
+
+## Non-waivable baseline guarantees
+
+The brief cannot waive candidate-caused regressions merely by omission. Review
+may block a concrete, material regression in:
+
+- Authorization, tenant isolation, or permission boundaries
+- Confidentiality, privacy, secret handling, or data exposure
+- Persistent-data integrity or externally visible effect integrity
+- Compatibility, legal obligations, repository policy, or explicitly preserved
+  existing behavior
+
+A weakness that was already reachable and is not introduced, exposed, or
+materially worsened by the candidate remains a baseline issue. A product wish
+that is absent from both the sealed brief and this safety floor is a proposed
+contract amendment, not a current blocker.
+
+Use “baseline issue” only for that pre-existing, candidate-unworsened case. A
+candidate-caused violation of this safety floor remains eligible to block even
+when the brief omitted it.
 
 Do not silently turn these into blockers:
 
@@ -44,6 +65,6 @@ Do not silently turn these into blockers:
 - General refactoring opportunities
 - Defense in depth with no current reachable failure
 - Future capabilities behind an effective fail-closed fence
-- Product requirements absent from the sealed brief
+- Product requirements absent from the sealed brief and baseline guarantees
 
 A reviewer may propose a contract amendment, but must label it as such.

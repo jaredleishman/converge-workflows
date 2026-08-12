@@ -24,9 +24,9 @@ Read:
 Then:
 
 1. Run `python3 "<plugin-root>/scripts/state_gate.py" check review` and stop
-   with its guidance if it refuses; it confirms the candidate is
-   `INTERNALLY_VERIFIED` and `broad_used` is `0`. Confirm the exact candidate
-   can be resolved.
+   with its guidance if it refuses; it confirms `INTERNALLY_VERIFIED`, unused
+   broad budget, and an unchanged exact candidate. For a pull request, resolve
+   the remote head again and run `candidate check --current-head <sha>`.
 2. Remain read-only. Do not implement fixes or silently amend the brief.
 3. Perform the only broad implementation review. Continue after the first
    blocker and return all currently supported findings in one batch.
@@ -35,14 +35,25 @@ Then:
 5. Apply the blocker evidence standard. Separate current blockers from baseline
    issues, future prerequisites, non-blocking hardening, and proposed contract
    amendments.
+   A candidate-caused regression may also violate a non-waivable baseline
+   guarantee even when the brief omitted an explicit acceptance criterion.
 6. For Critical work, independent same-head reviewers may run in parallel. Hide
    their findings from one another, synthesize once, and remediate only after
    all complete. The set consumes one broad review.
-7. Write `.converge/findings.md`, then run the state gate's `consume broad`.
-   Never edit budget fields by hand.
-8. End with `CLOSED` when clean, `REVIEW_FINDINGS` when blockers exist, or
-   `BLOCKED` when evidence is unavailable, recorded via the state gate's
-   `set-status --stage review`.
+7. If Fast skipped Challenge and Review finds a supported P1, record the
+   lane-misjudgment signal in `findings.md`; it does not add a review round.
+8. Write `.converge/findings.md`, then record the outcome with one gate
+   transition. First run `candidate check` again; for a pull request, resolve
+   and pass its current head again. Use `CLOSED` when clean; use
+   `REVIEW_FINDINGS --finding REV-1`
+   (repeat `--finding` for the batch) when blockers exist; use `REPLAN` or
+   `SPLIT` with one or more `--finding` IDs for a contract-level outcome; or
+   use `BLOCKED --reason ...` when evidence is unavailable. A successful Review
+   outcome transition
+   automatically consumes broad budget in the same state-file update.
+   `BLOCKED` does not. After the gate succeeds, update `findings.md` with the
+   actual disposition and budget. Never edit budget or finding-list fields in
+   `state.yaml` by hand.
 
 Do not start another broad review on the same contract and candidate lineage.
 When blockers exist, the next step is the `remediate` skill.

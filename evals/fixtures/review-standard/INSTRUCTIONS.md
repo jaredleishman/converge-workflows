@@ -24,6 +24,14 @@ cp evals/fixtures/review-standard/converge/state.yaml "$SCRATCH/.converge/state.
 git -C "$SCRATCH" init -q && git -C "$SCRATCH" add -A && git -C "$SCRATCH" -c user.email=eval@example.invalid -c user.name=eval commit -qm fixture
 ```
 
+From the scratch repository, capture the exact local candidate and finish the
+seeded Verify transition with the plugin under test:
+
+```text
+python3 <converge-repo>/plugins/converge/scripts/state_gate.py candidate capture-worktree
+python3 <converge-repo>/plugins/converge/scripts/state_gate.py set-status INTERNALLY_VERIFIED --stage verify
+```
+
 Then, from `$SCRATCH`, start a host with the plugin (for Claude Code:
 `claude --plugin-dir <repo>/plugins/converge`) and run:
 
@@ -34,11 +42,10 @@ Then, from `$SCRATCH`, start a host with the plugin (for Claude Code:
 ## Grade
 
 ```bash
-python3 evals/grade_review.py evals/fixtures/review-standard "$SCRATCH/.converge/findings.md"
+python3 evals/grade_review.py evals/fixtures/review-standard "$SCRATCH/.converge/findings.md" --state "$SCRATCH/.converge/state.yaml"
 ```
 
-Exit code 0 means every expected family and sibling marker appeared. The
+Exit code 0 means every expected family and sibling marker appeared and the
+state records `REVIEW_FINDINGS`, both finding IDs, and broad budget `1/1`. The
 grader is a substring check: treat PASS as necessary, not sufficient, and read
-the findings for substance. Also confirm afterward that `broad_used` is `1` in
-`$SCRATCH/.converge/state.yaml` — the skill must consume the budget through
-the state gate.
+the findings for substance.

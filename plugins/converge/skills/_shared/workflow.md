@@ -12,6 +12,8 @@ Verify
 Review: one broad, batch-complete review
 Remediate: fix the complete finding batch by root-cause family, then re-verify
 Close: one delta-only closure review, only when Review found blockers
+Targeted correction, only for a small remediation-caused defect or an
+  incomplete prior finding family: Remediate → targeted Verify confirmation
 Outcome: CLOSED, REPLAN, SPLIT, or BLOCKED
 ```
 
@@ -28,15 +30,22 @@ When closure finds a distinct original blocker family that the first review and
 plan both missed, stop serial patching. Return `REPLAN` or `SPLIT` unless the
 user explicitly chooses a new contract and review cycle.
 
-The budget is enforced mechanically by the bundled state gate (see the
-artifact protocol). Skills check preconditions and consume budget through the
-gate; budget fields in `state.yaml` are never edited by hand.
+Inside an invoked Converge workflow, the bundled state gate mechanically checks
+legal transitions and couples Review and Close outcomes to their budget use
+(see the artifact protocol). Converge remains skill-only: it does not intercept
+freehand agent actions outside the protocol. Budget fields in `state.yaml` are
+never edited by hand.
+
+Ordinary pre-review iteration is allowed. Build may resume after interruption.
+When Verify finds a candidate defect inside the sealed contract, it returns the
+candidate to Build without spending review budget. Missing external evidence or
+another unresolved prerequisite is `BLOCKED`, not a candidate defect.
 
 ## Sealing
 
 The contract seals when Plan ends `PLANNED`. The sealed sections of
-`brief.md` are Outcome, Non-goals, Dangerous false successes, Invariants,
-Acceptance criteria, and the Split decision.
+`brief.md` are Outcome, Non-goals, Dangerous false successes, Baseline
+guarantees, Invariants, Acceptance criteria, and the Split decision.
 
 Build, Verify, Remediate, and reviewers append to the Map, Implementation
 Crosswalk, Verification Evidence, findings, and closure sections; they do not
@@ -61,6 +70,10 @@ Use these local artifacts:
 ├── findings.md   # only when Review finds issues
 └── closure.md    # only when Close is needed
 ```
+
+One project root or worktree has one active `.converge/` contract. Use a
+separate worktree for a parallel or stacked change. Converge does not namespace
+multiple active contracts inside one root.
 
 Do not commit these files unless the user explicitly wants durable workflow
 artifacts. Prefer adding `.converge/` to `.git/info/exclude`, not silently

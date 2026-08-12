@@ -24,8 +24,10 @@ Read:
 Then:
 
 1. Run `python3 "<plugin-root>/scripts/state_gate.py" check remediate` and
-   stop with its guidance if it refuses. Record `REMEDIATING` via
-   `set-status REMEDIATING --stage remediate`.
+   stop with its guidance if it refuses. Before Round 1 remediation, the gate
+   also confirms that the reviewed candidate is unchanged. Record `REMEDIATING`
+   via `set-status REMEDIATING --stage remediate`; an interrupted `REMEDIATING`
+   resumes in place.
 2. Fix the complete blocking batch as one root-cause-grouped pass. For each
    finding, fix the shared root cause at its common seam and sweep every
    sibling path named in the finding. Do not patch only the cited example.
@@ -45,3 +47,13 @@ Then:
 Verify runs next and ends `READY_FOR_CLOSURE`; remediation is not complete
 until re-verification passes. Do not commit, push, open a pull request,
 deploy, or access production unless the user separately authorizes it.
+
+## Targeted closure correction
+
+When the gate reports `TARGETED_FIX`, do not rerun the Round 1 remediation
+process. Record the start with `set-status TARGETED_FIX --stage remediate`, fix
+only the closure finding IDs and named siblings, and append the correction to
+`closure.md`. End `READY_FOR_TARGETED_CONFIRMATION` or a terminal `REPLAN`,
+`SPLIT`, or `BLOCKED`. This path may complete a Round 1 finding ID that Close
+kept open, but it cannot absorb a distinct `ORIGINAL_MISS`, expand scope, or
+reopen broad review.

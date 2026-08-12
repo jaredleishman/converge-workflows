@@ -11,6 +11,8 @@
 
 - Brief path:
 - Lane:
+- Challenge performed: `yes | no`
+- Lane-misjudgment signal: `yes | no`
 - Review limitations:
 
 ## Blocking findings
@@ -34,5 +36,5 @@
 
 ## Review disposition
 
-- Status: `CLEAN | FINDINGS | BLOCKED`
-- Broad review budget used: `1/1`
+- Status: `PENDING | CLEAN | FINDINGS | REPLAN | SPLIT | BLOCKED`
+- Broad review budget used: `pending | 0/1 | 1/1`

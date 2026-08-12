@@ -1,15 +1,15 @@
 schema_version: 1
 
 lane: standard
-stage: verify
-status: READY_FOR_CLOSURE
+stage: remediate
+status: READY_FOR_VERIFY
 
 request:
   source: eval
   identifier: close-delta
 
 candidate:
-  kind: worktree
+  kind: unset
   repository: null
   base_sha: null
   head_sha: null
@@ -27,7 +27,8 @@ decision:
   replan_required: false
   split_required: false
   blocked_reason: null
+  resume_status: null
 
 findings:
-  open: []
+  open: ["REV-1", "REV-2"]
   closed: []

@@ -19,6 +19,17 @@ List nearby behavior that is intentionally unchanged.
 
 List outcomes that could look successful while the real system is wrong.
 
+## Baseline guarantees
+
+These are non-waivable regression boundaries even when an acceptance criterion
+omits them. Keep applicable evidence in the crosswalk; `Not applicable` requires
+a concrete scope reason.
+
+- `BG-1` — Authorization and tenant-isolation boundaries are not weakened.
+- `BG-2` — Confidentiality, privacy, and secret handling are not weakened.
+- `BG-3` — Persistent data and external effects are not corrupted, duplicated, or silently lost.
+- `BG-4` — Compatibility, legal obligations, repository policy, and explicitly preserved behavior remain intact unless the approved direction changes them.
+
 ## Map
 
 ### Entry points
@@ -72,7 +83,7 @@ For Standard work, keep this to at most six business-level examples.
 
 Build fills this in.
 
-| Obligation | Implementation seam | Paths covered | Tests | Deviations |
+| Obligation, including applicable BGs | Implementation seam | Paths covered | Tests | Deviations |
 |---|---|---|---|---|
 
 ## Verification evidence

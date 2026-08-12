@@ -53,6 +53,11 @@ def validate() -> None:
     if not SEMVER.fullmatch(version):
         fail("VERSION is not valid semantic version text")
 
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    version_lines = re.findall(r"(?m)^Current version: `([^`]+)`$", readme)
+    if version_lines != [version]:
+        fail("README.md Current version does not match VERSION")
+
     required_json = [
         ROOT / ".agents/plugins/marketplace.json",
         ROOT / ".claude-plugin/marketplace.json",
@@ -122,16 +127,34 @@ def validate() -> None:
     review_policy = (PLUGIN / "skills/_shared/review-policy.md").read_text(encoding="utf-8")
     required_policy_text = [
         "one broad", "delta closure", "Do not begin a third broad review automatically",
-        "ORIGINAL_MISS", "SCOPE_EXPANSION",
+        "ORIGINAL_MISS", "SCOPE_EXPANSION", "Round 1 candidate",
+        "targeted path is finite", "Blocking `NEW_EVIDENCE`",
     ]
     for phrase in required_policy_text:
         if phrase.lower() not in review_policy.lower():
             fail(f"review policy is missing required phrase: {phrase}")
 
     state_template = (PLUGIN / "skills/_shared/templates/state.yaml").read_text(encoding="utf-8")
-    for line in ["broad_max: 1", "closure_max: 1"]:
+    for line in ["broad_max: 1", "closure_max: 1", "resume_status: null"]:
         if line not in state_template:
             fail(f"state template must contain {line}")
+
+    scope_policy = (PLUGIN / "skills/_shared/scope-policy.md").read_text(encoding="utf-8")
+    for phrase in ["Non-waivable baseline guarantees", "Authorization", "data integrity"]:
+        if phrase.lower() not in scope_policy.lower():
+            fail(f"scope policy is missing required baseline phrase: {phrase}")
+
+    artifact_protocol = (PLUGIN / "skills/_shared/artifact-protocol.md").read_text(
+        encoding="utf-8"
+    )
+    for phrase in [
+        "candidate capture-worktree",
+        "write-once",
+        "TARGETED_FIX",
+        "resume",
+    ]:
+        if phrase not in artifact_protocol:
+            fail(f"artifact protocol is missing required gate contract: {phrase}")
 
     for path in ROOT.rglob("*"):
         if path.is_symlink() and not path.exists():

@@ -20,11 +20,13 @@ Installed skill names are namespaced by the host where applicable, for example
 
 ```text
 One broad review → one remediation batch → one closure review
+→ optional one-time targeted correction for a remediation-caused defect or
+  incomplete prior finding family
 → CLOSED, REPLAN, SPLIT, or BLOCKED
 ```
 
 Converge is intentionally skill-only. It does not install hooks, MCP servers,
 agents, background tasks, or credentialed integrations. It bundles one
 standard-library script, `scripts/state_gate.py`, that skills invoke to check
-stage preconditions and consume the review budget; nothing runs outside a
-skill invocation.
+legal transitions, couple review outcomes to budget use, and capture or check
+exact candidate identity; nothing runs outside a skill invocation.

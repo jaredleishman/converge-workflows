@@ -17,5 +17,11 @@
         "compute_total"
       ]
     }
-  ]
+  ],
+  "state_expectations": {
+    "status": "REVIEW_FINDINGS",
+    "review_budget.broad_used": 1,
+    "review_budget.closure_used": 0,
+    "findings.open": ["REV-1", "REV-2"]
+  }
 }
