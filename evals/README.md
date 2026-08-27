@@ -17,6 +17,47 @@ Replay historical changes in three lanes and record:
 
 Compare the original workflow, Converge, and a minimal build-plus-review control.
 
+## Keep the claims separate
+
+Score these dimensions independently:
+
+- **Lane and split quality** — whether impact, coupled boundaries, and proof
+  independence justify the chosen route.
+- **Pre-Build prevention** — root-cause families captured in the sealed plan or
+  Challenge before implementation starts.
+- **Proof fidelity** — whether evidence crosses the claimed production boundary
+  rather than calling a helper or injecting downstream state.
+- **Round 1 detection** — supported blocker families first found by the broad
+  review.
+- **Finite-loop compliance** — broad, closure, targeted, replan, and split
+  counts and whether the loop breaker fires at the correct time.
+- **Accuracy and cost** — invalid blockers, escaped defects, elapsed time,
+  tokens when available, and artifact size.
+
+A protocol-compliant artifact is not evidence of first-candidate prevention.
+Planning coverage is not prevention unless a blinded Build run also produces a
+candidate and the hidden defect families are then adjudicated. Report the
+narrowest claim the run supports.
+
+## Replay controls
+
+For paired replays, freeze the request, repository base, host, model/context,
+tool access, and budget before either condition runs. Keep the historical
+outcome, later commits, final PR body, and answer key hidden from the agent.
+Give the scored agent a content-only export of the pre-change source tree:
+remove Git metadata and remotes, and disable network or PR-page access that
+could recover later objects. Keep the exact repository and commit provenance in
+the evaluator's hidden record.
+Compare the released policy with the candidate policy on that same input; add a
+minimal build-plus-review control when cost permits.
+
+Grade causal properties and execution sequences, not terminology. A finding
+earns credit when it identifies the violated property, a defeating sequence,
+the connected surfaces, and the needed contract or proof amendment. Keyword or
+substring matches are never efficacy evidence. Record hindsight contamination,
+missing source snapshots, unavailable tools, and candidate-head gaps as
+limitations rather than silently filling them in.
+
 ## Dogfood evidence
 
 Fixtures test whether an agent follows the protocol. They do not prove that the
@@ -25,8 +66,11 @@ real replay or dogfood change, record one row outside the candidate repository
 with at least:
 
 - Date, host, model/context, lane, and change identifier
-- Challenge performed, Round 1 blocker families, Fast-lane misjudgment signal,
-  and invalid-P1 adjudications
+- Lane rationale or Standard exception, split decision, Challenge findings
+  before Build, Round 1 blocker families, Fast-lane misjudgment signal, and
+  invalid-P1 adjudications
+- Triggered lifecycle-matrix paths, proof-fidelity classifications, and
+  planned-mechanism drift decisions
 - Closure classification counts, including original misses, fix-introduced
   issues, and blocking new-evidence dispositions
 - Build/Verify iterations, broad reviews, closure reviews, targeted corrections,
@@ -42,6 +86,12 @@ rates alone.
 
 `fixtures/` contains seeded scenarios with known defect families and a grader:
 
+The repository validator and unit tests check that the packaged policy contract
+is present and internally consistent. Under Converge's own proof taxonomy,
+those static checks are `PROXY` evidence for agent behavior; they cannot by
+themselves prove lane selection, evidence disposition, drift routing, or review
+quality.
+
 - `fixtures/review-standard/` — measures whether the `review` skill is
   batch-complete and sweeps sibling paths. See its `INSTRUCTIONS.md`.
 - `fixtures/close-delta/` — measures whether the `close` skill stays
@@ -55,4 +105,6 @@ rates alone.
   workflow outcome and review budgets.
 
 The scenario files under `scenarios/` remain descriptive replay guides for
-evaluating full workflow runs on real changes.
+evaluating full workflow runs on real changes. Their hidden answer keys require
+semantic human or independent-model adjudication; do not extend the substring
+fixture grader and claim that it measures efficacy.

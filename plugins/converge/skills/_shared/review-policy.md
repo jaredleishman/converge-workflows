@@ -27,6 +27,29 @@ For Critical work, parallel reviewers may inspect the same exact candidate.
 Synthesize all results before any fix is made. The parallel set consumes one
 broad-review budget.
 
+### Critical same-candidate lenses
+
+For lifecycle-heavy Critical work, default to these complementary primary
+lenses:
+
+1. Timing, cancellation, late completion, and physical-resource ownership
+2. Persistent identity, collision/deduplication, transactions, and
+   external-effect integrity
+3. State lifecycle, recovery, promotion, and test realism or proof fidelity
+
+The lens is an emphasis, not a silo. Every reviewer reads the sealed contract,
+inspects the complete candidate, and performs a cross-lens sweep for material
+failures outside the primary lens. Tailor or combine lenses when the Critical
+risk is instead authorization, cryptography, migration, or another mechanism;
+record why the chosen set covers the actual failure model.
+
+Keep independent reports hidden from one another until they finish. Each report
+must record reviewer identity, repository, base and head or worktree
+fingerprint, acquisition method, primary lens, full-candidate sweep, and
+limitations. If candidate identity differs, do not synthesize or spend the
+broad budget; resolve the mismatch or record `BLOCKED`. The root workflow
+deduplicates root-cause families and records one batch-complete disposition.
+
 ## Blocker standard
 
 A P0/P1 blocker requires:

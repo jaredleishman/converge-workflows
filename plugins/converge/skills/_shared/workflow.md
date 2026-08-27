@@ -44,15 +44,19 @@ another unresolved prerequisite is `BLOCKED`, not a candidate defect.
 ## Sealing
 
 The contract seals when Plan ends `PLANNED`. The sealed sections of
-`brief.md` are Outcome, Non-goals, Dangerous false successes, Baseline
-guarantees, Invariants, Acceptance criteria, and the Split decision.
+`brief.md` are the lane rationale and any Standard exception, Outcome,
+Non-goals, Dangerous false successes, Baseline guarantees, Proposed change,
+Planned mechanism baseline, Invariants, Acceptance criteria, any triggered
+lifecycle/ownership matrix and Critical proof obligations, the Challenge
+contract amendments, and the Split decision.
 
 Build, Verify, Remediate, and reviewers append to the Map, Implementation
 Crosswalk, Verification Evidence, findings, and closure sections; they do not
-edit sealed sections. Any change to a sealed section is a contract amendment:
-it must be labeled as such, routed back through Plan's Challenge step, and it
-starts a new contract with a new review cycle rather than silently reusing the
-current budget.
+edit sealed sections. The Map may gain newly observed facts, but those facts do
+not make an unplanned mechanism retroactively approved. Any change to a sealed
+section is a contract amendment: it must be labeled as such, routed back
+through Plan's Challenge step, and it starts a new contract with a new review
+cycle rather than silently reusing the current budget.
 
 ## One source of truth
 

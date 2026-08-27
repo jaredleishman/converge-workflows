@@ -50,12 +50,50 @@ Critical is not triggered merely because a change uses a transaction, migration,
 queue, or database. Escalate when impact and failure complexity are both high,
 or when impact is independently catastrophic.
 
+### Compound-boundary screen
+
+Treat these as boundary types rather than implementation keywords:
+
+- Hard deadline or late-completion cutoff
+- External I/O or externally visible effect
+- Async handoff through a task, thread, queue, callback, or signal
+- Retry, cancellation, recovery, or next-attempt behavior
+- Persistent identity, collision, or deduplication rule
+- Transaction or commit-order boundary
+- Shared physical resource such as a connection, permit, worker, or pool slot
+- Asynchronous approval, promotion, activation, or multiple partitioned streams
+
+Select Critical when three or more boundary types are causally coupled and at
+least one has a persistent-data, external-effect, or physical-resource
+consequence. “Causally coupled” means correctness depends on their ordering or
+on ownership transferring between contexts or attempts. This screen makes a
+deadline plus external HTTP plus persistent identity plus detached work
+Critical; it does not make one ordinary transaction, queue, or external call
+Critical by itself.
+
+Standard is allowed only with a sealed, falsifiable exception that:
+
+- Enumerates the coupled boundaries and the defeating failure sequence
+- Shows that failure is locally contained to a bounded, reversible unit
+- Shows independent recovery without manual reconciliation
+- Shows that no correctness-critical durable identity, external effect, or
+  physical resource changes owner across contexts or attempts
+- Names evidence that would falsify the exception
+
+An unsupported “low risk” or “well tested” assertion is not an exception.
+
 Critical additions may include:
 
-- Two independent Challenge passes using different models or contexts
 - One or two explicit coverage matrices
 - Same-head parallel implementation reviews synthesized into one finding batch
 - Blind code-first review when contract anchoring is a material concern
 
 These additions still count as one broad review round because all reviewers
 inspect the same candidate before remediation.
+
+Critical planning uses two independent Challenge passes with hidden findings
+and different contexts or lenses. When a host cannot provide a second
+independent context, record the limitation and obtain an explicit decision
+before treating Challenge as complete. A lifecycle/ownership matrix is
+conditional under `scope-policy.md`; it is not required for simple Standard
+briefs or for Critical work whose risk is unrelated to lifecycle ownership.

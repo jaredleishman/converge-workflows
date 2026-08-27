@@ -5,6 +5,7 @@
 - Repository:
 - Base:
 - Head or worktree fingerprint:
+- Acquisition method:
 - Review round: `BROAD-1`
 
 ## Contract reviewed
@@ -14,6 +15,19 @@
 - Challenge performed: `yes | no`
 - Lane-misjudgment signal: `yes | no`
 - Review limitations:
+
+## Critical reviewer audit (conditional)
+
+Omit for non-Critical work. Every reviewer scans the full candidate; the
+primary lens is an emphasis, not a scope limit.
+
+| Reviewer | Repository | Base | Head or fingerprint | Acquisition method | Primary lens | Full-candidate cross-lens sweep | Limitations |
+|---|---|---|---|---|---|---|---|
+
+- Lens-set rationale:
+- Candidate identity match: `yes | no`
+- Synthesis owner:
+- Synthesis limitations:
 
 ## Blocking findings
 

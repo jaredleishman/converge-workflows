@@ -4,6 +4,23 @@ All notable changes to Converge are documented here.
 
 ## Unreleased
 
+### Added
+
+- A compound-boundary Critical screen with a falsifiable Standard exception,
+  plus a conditional lifecycle/ownership matrix and Critical proof obligations
+  in the existing Change Brief.
+- A provenance-aware PR #1847 replay and retrospective that separates planning
+  coverage, proof fidelity, finite-loop compliance, accuracy, and cost.
+
+### Changed
+
+- Plan now seals the planned mechanism baseline, and Build, Remediate, and
+  Verify explicitly route material ownership or failure-model drift to REPLAN
+  or SPLIT.
+- Critical verification now distinguishes direct or boundary-faithful evidence
+  from proxies, and lifecycle-heavy Critical review uses auditable,
+  complementary same-candidate lenses inside the existing broad-review budget.
+
 ## [0.2.4] - 2026-08-11
 
 ### Added

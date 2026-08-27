@@ -37,12 +37,21 @@ Then:
    amendments.
    A candidate-caused regression may also violate a non-waivable baseline
    guarantee even when the brief omitted an explicit acceptance criterion.
-6. For Critical work, independent same-head reviewers may run in parallel. Hide
-   their findings from one another, synthesize once, and remediate only after
-   all complete. The set consumes one broad review.
-7. If Fast skipped Challenge and Review finds a supported P1, record the
+6. For lifecycle-heavy Critical work, use the default complementary lenses in
+   `review-policy.md`: timing/cancellation/physical ownership; persistent
+   identity/transactions/external effects; and state lifecycle/test realism.
+   Tailor the set with a recorded rationale when the actual Critical risk has a
+   different shape. A lens is an emphasis: every reviewer scans the complete
+   candidate for cross-lens failures.
+7. Keep independent reports hidden from one another until they finish. Record
+   each reviewer's identity, repository, base/head or worktree fingerprint,
+   acquisition method, primary lens, full-candidate sweep, and limitations in
+   the Critical reviewer audit. Do not synthesize mismatched candidates.
+   Deduplicate root-cause families once and remediate only after the set is
+   complete. The set consumes one broad review.
+8. If Fast skipped Challenge and Review finds a supported P1, record the
    lane-misjudgment signal in `findings.md`; it does not add a review round.
-8. Write `.converge/findings.md`, then record the outcome with one gate
+9. Write `.converge/findings.md`, then record the outcome with one gate
    transition. First run `candidate check` again; for a pull request, resolve
    and pass its current head again. Use `CLOSED` when clean; use
    `REVIEW_FINDINGS --finding REV-1`

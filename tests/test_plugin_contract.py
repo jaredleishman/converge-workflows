@@ -17,6 +17,10 @@ BASE_SHA = "a" * 40
 HEAD_SHA = "b" * 40
 
 
+def squash(text: str) -> str:
+    return " ".join(text.split())
+
+
 def load_module(path: Path, name: str):
     spec = importlib.util.spec_from_file_location(name, path)
     assert spec is not None and spec.loader is not None
@@ -88,11 +92,171 @@ class PluginContractTests(unittest.TestCase):
         self.assertIn("pending | 0/1 | 1/1", closure)
 
     def test_standard_and_fast_lanes_have_complexity_budgets(self) -> None:
-        lanes = (PLUGIN / "skills/_shared/lanes.md").read_text(encoding="utf-8")
+        lanes = squash(
+            (PLUGIN / "skills/_shared/lanes.md").read_text(encoding="utf-8")
+        )
         self.assertIn("Important invariants: at most 4", lanes)
         self.assertIn("Acceptance criteria: at most 6", lanes)
         self.assertIn("at most two important invariants", lanes)
         self.assertRegex(lanes, r"three acceptance\s+criteria")
+
+    def test_compound_boundary_screen_contract_is_packaged(self) -> None:
+        lanes = squash(
+            (PLUGIN / "skills/_shared/lanes.md").read_text(encoding="utf-8")
+        )
+        for phrase in [
+            "three or more boundary types",
+            "persistent-data, external-effect, or physical-resource consequence",
+            "deadline plus external HTTP plus persistent identity plus detached work",
+            "locally contained to a bounded, reversible unit",
+            "independent recovery without manual reconciliation",
+            "Names evidence that would falsify the exception",
+        ]:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, lanes)
+        self.assertIn(
+            "does not make one ordinary transaction, queue, or external call Critical",
+            lanes,
+        )
+
+    def test_conditional_matrix_contract_keeps_standard_fixtures_lightweight(
+        self,
+    ) -> None:
+        brief = (PLUGIN / "skills/_shared/templates/brief.md").read_text(
+            encoding="utf-8"
+        )
+        plan = (PLUGIN / "skills/plan/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Conditional lifecycle and ownership matrix", brief)
+        self.assertIn("Include this section only", brief)
+        self.assertIn("Omit both sections", plan)
+        self.assertIn("two independent passes", plan)
+        flattened_brief = squash(brief)
+        for column in [
+            "Event or failure path",
+            "Control context and handoff",
+            "Election or visibility effect",
+            "Persistence owner and timing",
+            "Resource owner and release",
+            "Durable state",
+            "Identity, collision, and deduplication",
+            "Transaction or effect commit",
+            "Retry, cleanup, and next attempt",
+            "Failure evidence",
+        ]:
+            with self.subTest(column=column):
+                self.assertIn(column, flattened_brief)
+
+        for fixture in sorted((ROOT / "evals/fixtures").glob("*/converge/brief.md")):
+            with self.subTest(fixture=fixture):
+                text = fixture.read_text(encoding="utf-8")
+                self.assertIn("Lane: `standard`", text)
+                self.assertNotIn("lifecycle and ownership matrix", text.lower())
+                self.assertNotIn("critical proof obligations", text.lower())
+
+    def test_proof_fidelity_contract_is_packaged(self) -> None:
+        scope = squash(
+            (PLUGIN / "skills/_shared/scope-policy.md").read_text(
+                encoding="utf-8"
+            )
+        )
+        verify = squash(
+            (PLUGIN / "skills/verify/SKILL.md").read_text(encoding="utf-8")
+        )
+        for phrase in [
+            "BOUNDARY_DIRECT",
+            "BOUNDARY_FAITHFUL",
+            "PROXY",
+            "UNAVAILABLE",
+            "proxy-only evidence is `UNPROVEN`",
+        ]:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, scope)
+        self.assertIn("controlled clock or fake endpoint", verify)
+        self.assertIn("direct helper call", verify)
+        self.assertIn("every required obligation is `PASS`", verify)
+
+    def test_mechanism_drift_routes_are_packaged(self) -> None:
+        paths = [
+            PLUGIN / "skills/build/SKILL.md",
+            PLUGIN / "skills/remediate/SKILL.md",
+            PLUGIN / "skills/verify/SKILL.md",
+        ]
+        for path in paths:
+            with self.subTest(path=path):
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("planned-mechanism drift checkpoint", text)
+                self.assertIn("REPLAN", text)
+                self.assertIn("SPLIT", text)
+        remediate = paths[1].read_text(encoding="utf-8")
+        self.assertIn("A new asynchronous mechanism", remediate)
+
+    def test_critical_review_lens_contract_is_packaged(self) -> None:
+        policy = squash(
+            (PLUGIN / "skills/_shared/review-policy.md").read_text(
+                encoding="utf-8"
+            )
+        )
+        findings = (PLUGIN / "skills/_shared/templates/findings.md").read_text(
+            encoding="utf-8"
+        )
+        for phrase in [
+            "Timing, cancellation, late completion, and physical-resource ownership",
+            "Persistent identity, collision/deduplication, transactions",
+            "State lifecycle, recovery, promotion, and test realism",
+            "Every reviewer reads the sealed contract",
+            "The root workflow",
+        ]:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, policy)
+        self.assertIn("Critical reviewer audit", findings)
+        self.assertIn("Candidate identity match", findings)
+        self.assertIn("Full-candidate cross-lens sweep", findings)
+        self.assertIn("one broad-review budget", policy)
+
+    def test_critical_scenario_contract_is_semantic_bounded_and_blinded(self) -> None:
+        scenario_text = (ROOT / "evals/scenarios/critical.md").read_text(
+            encoding="utf-8"
+        )
+        scenario = squash(scenario_text)
+        readme = squash((ROOT / "evals/README.md").read_text(encoding="utf-8"))
+        for phrase in [
+            "PR #1847",
+            "2cfee7b7435e1bd04a322b06a79ed529ef09b0e5",
+            "123f9da9024825520d075fcf20f1893fef6b6bb2",
+            "4ae5834d076131a97502986643aff84a28b41646",
+            "39fc03103f578c28533849923eebfe93c5811496",
+            "HINDSIGHT_LIMITED",
+            "Use semantic adjudication; do not grade substrings",
+            "Required proof-fidelity probe",
+        ]:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, scenario)
+        visible = scenario_text.split("## Frozen runner input", 1)[1].split(
+            "## Replay procedure", 1
+        )[0]
+        visible_flat = squash(visible)
+        for forbidden in [
+            "pebbleferry",
+            "PR #1847",
+            "2cfee7b7435e1bd04a322b06a79ed529ef09b0e5",
+            "123f9da9024825520d075fcf20f1893fef6b6bb2",
+            "4ae5834d076131a97502986643aff84a28b41646",
+            "39fc03103f578c28533849923eebfe93c5811496",
+            "Normalized opening intent",
+        ]:
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, visible_flat)
+        for required in [
+            "content-only export",
+            "no Git metadata",
+            "disable network",
+            "Do not reveal repository or PR identity",
+        ]:
+            with self.subTest(required=required):
+                self.assertIn(required, visible_flat)
+        self.assertIn("Keep the claims separate", readme)
+        self.assertIn("Keyword or substring matches are never efficacy evidence", readme)
+        self.assertIn("static checks are `PROXY` evidence for agent behavior", readme)
 
     def test_repository_validator_passes(self) -> None:
         module = load_module(ROOT / "scripts/validate.py", "converge_validate")
@@ -189,6 +353,74 @@ class StateGateTests(unittest.TestCase):
         self.assertEqual("BUILDING", state["status"])
         self.assertEqual("unset", state["candidate.kind"])
         self.assertEqual(0, state["review_budget.broad_used"])
+
+    def test_replan_and_split_preserve_budgets_from_owned_stages(self) -> None:
+        def fresh_state(label: str) -> Path:
+            path = self.tmp / f"{label}.yaml"
+            shutil.copy(PLUGIN / "skills/_shared/templates/state.yaml", path)
+            return path
+
+        def advance(path: Path, status: str) -> None:
+            self.gate.set_status(path, "PLANNED", "plan")
+            self.gate.set_status(path, "BUILDING", "build")
+            if status == "BUILDING":
+                return
+            self.gate.set_status(path, "READY_FOR_VERIFY", "build")
+            if status == "READY_FOR_VERIFY_INITIAL":
+                return
+            self.gate.record_candidate(
+                path,
+                kind="commit",
+                repository="example/repository",
+                base_sha=BASE_SHA,
+                head_sha=HEAD_SHA,
+            )
+            self.gate.set_status(path, "INTERNALLY_VERIFIED", "verify")
+            self.gate.set_status(
+                path,
+                "REVIEW_FINDINGS",
+                "review",
+                findings=["REV-1"],
+            )
+            self.gate.set_status(path, "REMEDIATING", "remediate")
+            if status == "REMEDIATING":
+                return
+            self.gate.set_status(path, "READY_FOR_VERIFY", "remediate")
+
+        owner_stage = {
+            "BUILDING": "build",
+            "READY_FOR_VERIFY_INITIAL": "verify",
+            "REMEDIATING": "remediate",
+            "READY_FOR_VERIFY_REMEDIATION": "verify",
+        }
+        for current in owner_stage:
+            for destination in ["REPLAN", "SPLIT"]:
+                with self.subTest(current=current, destination=destination):
+                    path = fresh_state(f"{current}-{destination}")
+                    advance(path, current)
+                    before = self.gate.load(path)[1]
+                    self.gate.set_status(
+                        path,
+                        destination,
+                        owner_stage[current],
+                    )
+                    after = self.gate.load(path)[1]
+                    self.assertEqual(
+                        before["review_budget.broad_used"],
+                        after["review_budget.broad_used"],
+                    )
+                    self.assertEqual(
+                        before["review_budget.closure_used"],
+                        after["review_budget.closure_used"],
+                    )
+                    self.assertEqual(
+                        destination == "REPLAN",
+                        after["decision.replan_required"],
+                    )
+                    self.assertEqual(
+                        destination == "SPLIT",
+                        after["decision.split_required"],
+                    )
 
     def test_blocked_requires_reason_and_resumes_exact_prior_state(self) -> None:
         self.assertEqual(0, self.transition("PLANNED", "plan"))

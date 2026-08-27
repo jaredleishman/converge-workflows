@@ -38,9 +38,20 @@ Then:
 4. Append a Remediation Report section to `.converge/findings.md` recording,
    per finding: violated invariant, affected sibling paths, shared root cause,
    common fix seam, regressions added, and paths intentionally unchanged.
-5. If remediation reveals a distinct new original blocker family or material
-   scope expansion, stop serial patching and record `REPLAN` or `SPLIT`.
-6. End by recording `READY_FOR_VERIFY` via
+5. Before returning to Verify, run the planned-mechanism drift checkpoint in
+   `scope-policy.md`. Inventory every new or materially changed
+   thread/task/queue/callback/signal, transaction or commit point,
+   retry/timeout/cancellation path, logical or physical resource owner,
+   identity/collision/deduplication rule, persistent-state transition, and
+   external-effect path. Append observations to Map and record the declaration
+   in the Remediation Report.
+6. If remediation reveals a distinct new original blocker family, material
+   scope expansion, or an unplanned mechanism that changes ownership,
+   ordering, identity, or the failure model, stop serial patching. Record
+   `REPLAN` for the same outcome or `SPLIT` for independently provable outcomes.
+   A new asynchronous mechanism is not a cheap targeted correction merely
+   because it fixes a named example.
+7. End by recording `READY_FOR_VERIFY` via
    `set-status READY_FOR_VERIFY --stage remediate` so Verify reruns the
    invalidated obligations, or `REPLAN`, `SPLIT`, or `BLOCKED`.
 
