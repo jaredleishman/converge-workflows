@@ -18,7 +18,7 @@ Read:
 - `.converge/findings.md`
 - `../_shared/workflow.md`
 - `../_shared/review-policy.md`
-- `../_shared/scope-policy.md`
+- `../_shared/candidate-checks.md`
 - `../_shared/artifact-protocol.md`
 
 Then:
@@ -39,7 +39,7 @@ Then:
    per finding: violated invariant, affected sibling paths, shared root cause,
    common fix seam, regressions added, and paths intentionally unchanged.
 5. Before returning to Verify, run the planned-mechanism drift checkpoint in
-   `scope-policy.md`. Inventory every new or materially changed
+   `candidate-checks.md`. Inventory every new or materially changed
    thread/task/queue/callback/signal, transaction or commit point,
    retry/timeout/cancellation path, logical or physical resource owner,
    identity/collision/deduplication rule, persistent-state transition, and

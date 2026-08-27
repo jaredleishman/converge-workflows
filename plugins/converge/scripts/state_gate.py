@@ -15,10 +15,12 @@ a general YAML parser. Non-empty lists use JSON-style inline YAML, for example
 from __future__ import annotations
 
 import argparse
+import datetime
 import hashlib
 import json
 import os
 import re
+import shutil
 import stat
 import subprocess
 import sys
@@ -63,8 +65,8 @@ NEXT_ACTION = {
     "TARGETED_FIX": "remediate — fix only the closure-scoped issue",
     "READY_FOR_TARGETED_CONFIRMATION": "verify — targeted confirmation only",
     "CLOSED": "none — the change is closed",
-    "REPLAN": "plan — create a new contract and state file",
-    "SPLIT": "plan — create independently provable contracts",
+    "REPLAN": "plan — run state_gate.py init, then seal a new contract",
+    "SPLIT": "plan — run state_gate.py init in each worktree that needs its own contract",
     "BLOCKED": "resolve the blocker, then run the gate's resume command",
 }
 
@@ -233,16 +235,19 @@ def _coerce(value: str) -> object:
             raise GateError(f"quoted state value is not text: {value!r}")
         return parsed
     try:
-        return int(value)
+        parsed_int = int(value)
     except ValueError:
         return value.strip("'")
+    if len(value) > 16:
+        return value
+    return parsed_int
 
 
 def load(path: Path) -> tuple[str, dict[str, object]]:
     if not path.is_file():
         raise GateError(
-            f"{path} does not exist. Run plan first; it creates the state "
-            "file from the shared template."
+            f"{path} does not exist. Run plan, which calls init, or run "
+            "state_gate.py init."
         )
     text = path.read_text(encoding="utf-8")
     state = parse_state(text)
@@ -280,6 +285,10 @@ def validate_state(state: dict[str, object]) -> None:
     resume_status = state.get("decision.resume_status")
     if resume_status is not None and resume_status not in STATES - TERMINAL_STATES - {"BLOCKED"}:
         raise GateError(f"state file has invalid resume status: {resume_status!r}")
+
+    predecessor = state.get("predecessor")
+    if predecessor is not None and not isinstance(predecessor, str):
+        raise GateError("state file predecessor must be null or a path string")
 
 
 def _budget(state: dict[str, object], name: str) -> tuple[int, int]:
@@ -399,6 +408,7 @@ def set_status(
             f"illegal transition {current} -> {status}; allowed: {allowed}.{guidance}"
         )
     _validate_transition_stage(state, current, status, stage)
+    _require_outcome_artifact(path, current, status)
 
     normalized_findings = _normalize_findings(findings or [])
     if status == "BLOCKED":
@@ -534,8 +544,6 @@ def set_status(
         "review_budget.closure_used": closure_used,
         "findings.open": open_findings,
         "findings.closed": closed_findings,
-        "decision.replan_required": status == "REPLAN",
-        "decision.split_required": status == "SPLIT",
     }
     if status == "BLOCKED":
         changes["decision.blocked_reason"] = reason.strip() if reason else None
@@ -898,6 +906,81 @@ def _validate_transition_stage(
         )
 
 
+def _require_outcome_artifact(state_path: Path, current: str, destination: str) -> None:
+    if current == "PLANNING" and destination == "PLANNED":
+        _require_artifact(state_path, "brief.md")
+    elif current == "INTERNALLY_VERIFIED" and destination in BROAD_OUTCOMES:
+        _require_artifact(state_path, "findings.md")
+    elif current == "READY_FOR_CLOSURE" and destination in CLOSURE_OUTCOMES:
+        _require_artifact(state_path, "closure.md")
+    elif current == "READY_FOR_TARGETED_CONFIRMATION" and destination == "CLOSED":
+        _require_artifact(state_path, "closure.md")
+
+
+def _require_artifact(state_path: Path, filename: str) -> None:
+    artifact = state_path.parent / filename
+    if not artifact.is_file():
+        raise GateError(
+            f"{filename} must exist before recording this outcome. "
+            "Write the artifact, then set-status."
+        )
+    if not artifact.read_text(encoding="utf-8").strip():
+        raise GateError(f"{filename} is empty")
+
+
+def _template_dir() -> Path:
+    return Path(__file__).resolve().parent.parent / "skills/_shared/templates"
+
+
+def init_contract(path: Path, *, lane: str = "standard") -> str:
+    if lane not in LANES:
+        raise GateError(f"unknown lane {lane!r}; allowed: {', '.join(sorted(LANES))}")
+    templates = _template_dir()
+    state_template = templates / "state.yaml"
+    brief_template = templates / "brief.md"
+    if not state_template.is_file() or not brief_template.is_file():
+        raise GateError(f"cannot find contract templates in {templates}")
+
+    parent = path.parent
+    parent.mkdir(parents=True, exist_ok=True)
+    message_prefix = ""
+    predecessor: str | None = None
+
+    if path.is_file():
+        _, state = load(path)
+        status = str(state["status"])
+        if status == "PLANNING":
+            new_text = _apply_changes(path.read_text(encoding="utf-8"), {"lane": lane})
+            _write_state(path, new_text)
+            return f"OK: reused PLANNING contract, lane {lane}."
+        if status not in TERMINAL_STATES:
+            raise GateError(
+                f"cannot init while status is {status}. "
+                "Finish the contract, or end it CLOSED, REPLAN, or SPLIT first."
+            )
+        stamp = datetime.datetime.now(datetime.timezone.utc).strftime(
+            "%Y%m%dT%H%M%S%fZ"
+        )
+        dest = parent / "archive" / f"{stamp}-{status}"
+        dest.mkdir(parents=True, exist_ok=False)
+        for name in ("brief.md", "state.yaml", "findings.md", "closure.md"):
+            src = parent / name
+            if src.is_file():
+                shutil.copy2(src, dest / name)
+                src.unlink()
+        predecessor = dest.relative_to(parent).as_posix()
+        message_prefix = f"archived {status} to {predecessor}; "
+
+    (parent / "brief.md").write_text(
+        brief_template.read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    path.write_text(state_template.read_text(encoding="utf-8"), encoding="utf-8")
+    changes: dict[str, object] = {"lane": lane, "predecessor": predecessor}
+    new_text = _apply_changes(path.read_text(encoding="utf-8"), changes)
+    _write_state(path, new_text)
+    return f"OK: {message_prefix}created PLANNING contract, lane {lane}."
+
+
 def _require_candidate_capture_state(state: dict[str, object]) -> None:
     status = state.get("status")
     if status not in CANDIDATE_CAPTURE_STATES:
@@ -1056,6 +1139,11 @@ def show(state: dict[str, object]) -> str:
     if status == "BLOCKED":
         lines.append(f"blocked reason: {state.get('decision.blocked_reason')}")
         lines.append(f"resume status: {state.get('decision.resume_status')}")
+    if status in {"TARGETED_FIX", "READY_FOR_TARGETED_CONFIRMATION"}:
+        lines.append("broad and closure review cannot reopen on this contract")
+    predecessor = state.get("predecessor")
+    if isinstance(predecessor, str) and predecessor:
+        lines.append(f"predecessor: {predecessor}")
     lines.append(f"next allowed action: {NEXT_ACTION[status]}")
     return "\n".join(lines)
 
@@ -1070,6 +1158,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("show", help="print state and the next allowed action")
+    init_p = sub.add_parser(
+        "init",
+        help="create a PLANNING contract, or archive a terminal one and start over",
+    )
+    init_p.add_argument("--lane", choices=sorted(LANES), default="standard")
 
     check_p = sub.add_parser("check", help="verify an action's preconditions")
     check_p.add_argument(
@@ -1106,6 +1199,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "show":
             _, state = load(args.state)
             print(show(state))
+        elif args.command == "init":
+            print(init_contract(args.state, lane=args.lane))
         elif args.command == "check":
             _, state = load(args.state)
             print(check(state, args.action))

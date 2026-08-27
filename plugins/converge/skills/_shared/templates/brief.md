@@ -2,24 +2,10 @@
 
 ## Metadata
 
-- Request source:
 - Lane: `fast | standard | critical`
 - Lane rationale:
 - Compound-boundary screen: `not-triggered | critical | standard-exception`
-- Status: `PLANNING`
 - Last updated:
-
-### Standard exception (conditional)
-
-Omit this subsection for Fast, ordinary Standard, and Critical work. Include it
-only when the compound-boundary screen would select Critical but Standard is
-claimed.
-
-- Coupled boundaries and defeating sequence:
-- Local containment and reversible unit:
-- Independent recovery:
-- Cross-context or cross-attempt ownership analysis:
-- Falsifying evidence:
 
 ## Outcome
 
@@ -65,9 +51,8 @@ a concrete scope reason.
 ### Causal grounding trace (Standard and Critical)
 
 Omit for Fast. Trace every materially distinct mapped path in execution order,
-or give a concrete not-applicable reason. Merge identical tails. When the
-Critical lifecycle and ownership matrix applies, reference its rows instead of
-duplicating them here.
+or give a concrete not-applicable reason. Merge identical tails. When a Critical
+lifecycle matrix applies, reference its rows instead of duplicating them here.
 
 | Material path | Trigger through ownership, mutation/effect, failure/recovery, durable result, and next consumer or attempt | Not-applicable reason |
 |---|---|---|
@@ -84,35 +69,22 @@ different mechanism retroactively planned.
 
 - Organizing model:
 
-## Conditional lifecycle and ownership matrix
-
-Include this section only when `scope-policy.md` triggers it for Critical work;
-otherwise omit it. Use one row per applicable event or failure path and give a
-concrete reason for any omitted required event.
-
-| Event or failure path | Control context and handoff | Election or visibility effect | Persistence owner and timing | Resource owner and release | Durable state | Identity, collision, and deduplication | Transaction or effect commit | Retry, cleanup, and next attempt | Failure evidence |
-|---|---|---|---|---|---|---|---|---|---|
-
 ## Invariants
 
-For Standard work, keep this to at most four important properties.
+Fast: at most two. Standard: at most four.
 
 - `INV-1`:
 
 ## Acceptance criteria
 
-For Standard work, keep this to at most six business-level examples.
+Fast: at most three. Standard: at most six. Given / When / Then.
 
 - `AC-1` — Given / When / Then. Proposed regression:
 
-## Critical proof obligations
-
-Include this section only for material Critical boundaries; otherwise omit it.
-
-| Obligation | Production event or boundary | Sufficient direct or faithful evidence | Proxy or mock limitations | Planned disposition |
-|---|---|---|---|---|
-
 ## Challenge results
+
+Omit this whole section on Fast when Challenge was skipped. Record
+`Challenge skipped (Fast)` instead.
 
 ### Alternative mechanisms (conditional)
 
@@ -125,14 +97,6 @@ synthesizing the baseline.
 
 - Selection or synthesis:
 - Rationale:
-
-### Independent passes
-
-For Critical work, record both independent passes, their exact planning
-candidate, primary lens, and limitations. Omit this table for other lanes.
-
-| Pass | Exact planning candidate | Primary lens | Limitations |
-|---|---|---|---|
 
 ### Missing surfaces found
 

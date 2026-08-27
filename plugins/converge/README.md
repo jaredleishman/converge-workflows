@@ -27,6 +27,7 @@ One broad review → one remediation batch → one closure review
 
 Converge is intentionally skill-only. It does not install hooks, MCP servers,
 agents, background tasks, or credentialed integrations. It bundles one
-standard-library script, `scripts/state_gate.py`, that skills invoke to check
-legal transitions, couple review outcomes to budget use, and capture or check
-exact candidate identity; nothing runs outside a skill invocation.
+standard-library script, `scripts/state_gate.py`. Skills invoke it to check
+legal transitions, couple Review and Close outcomes to budget use, capture or
+check exact candidate identity, and start a new contract after `CLOSED`,
+`REPLAN`, or `SPLIT`. Nothing runs outside a skill invocation.

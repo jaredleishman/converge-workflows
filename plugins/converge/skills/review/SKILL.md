@@ -51,17 +51,16 @@ Then:
    complete. The set consumes one broad review.
 8. If Fast skipped Challenge and Review finds a supported P1, record the
    lane-misjudgment signal in `findings.md`; it does not add a review round.
-9. Write `.converge/findings.md`, then record the outcome with one gate
-   transition. First run `candidate check` again; for a pull request, resolve
-   and pass its current head again. Use `CLOSED` when clean; use
-   `REVIEW_FINDINGS --finding REV-1`
+9. Write `.converge/findings.md` from the template without copying budget or
+   disposition. Then run `candidate check` again; for a pull request, resolve
+   and pass its current head again. Record the outcome with one gate
+   transition. Use `CLOSED` when clean; use `REVIEW_FINDINGS --finding REV-1`
    (repeat `--finding` for the batch) when blockers exist; use `REPLAN` or
    `SPLIT` with one or more `--finding` IDs for a contract-level outcome; or
    use `BLOCKED --reason ...` when evidence is unavailable. A successful Review
-   outcome transition
-   automatically consumes broad budget in the same state-file update.
-   `BLOCKED` does not. After the gate succeeds, update `findings.md` with the
-   actual disposition and budget. Never edit budget or finding-list fields in
+   outcome transition automatically consumes broad budget in the same
+   state-file update. `BLOCKED` does not. The gate refuses the outcome if
+   `findings.md` is missing. Never edit budget or finding-list fields in
    `state.yaml` by hand.
 
 Do not start another broad review on the same contract and candidate lineage.

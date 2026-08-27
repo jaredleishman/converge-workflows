@@ -22,8 +22,8 @@ criteria; write `Not applicable` for irrelevant map boundaries instead of
 expanding the brief with speculative analysis.
 
 If Round 1 finds a P1 after Fast skipped Challenge, record a lane-misjudgment
-signal in `findings.md` and the evaluation log. This is evidence for future lane
-selection, not permission to restart review.
+signal in `findings.md`. This is evidence for future lane selection, not
+permission to restart review.
 
 ## Standard
 

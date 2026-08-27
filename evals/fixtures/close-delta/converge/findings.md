@@ -52,11 +52,6 @@ None recorded.
 
 None.
 
-## Review disposition
-
-- Status: `FINDINGS`
-- Broad review budget used: `1/1`
-
 ## Remediation Report
 
 ### REV-1 — missing remaining-total clamp

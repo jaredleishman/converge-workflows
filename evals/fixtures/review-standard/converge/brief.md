@@ -2,9 +2,7 @@
 
 ## Metadata
 
-- Request source: eval fixture `review-standard`
 - Lane: `standard`
-- Status: `INTERNALLY_VERIFIED`
 - Last updated: seeded
 
 ## Outcome
@@ -34,9 +32,9 @@ admin console, and order totals are computed from line items.
 
 ### Entry points
 
-- `src/discounts.py`: `apply_discount_api`, `apply_discount_batch`,
-  `apply_discount_admin`
-- `src/checkout.py`: `compute_total`
+- Discount application from the public API, the nightly batch job, and the
+  admin console
+- Checkout line-item totaling
 
 ### Sources of truth and provenance
 
@@ -80,8 +78,8 @@ Add the three discount entry points and the checkout total computation.
 
 - `AC-1` — Given a rate above `MAX_DISCOUNT_RATE`, when any discount entry
   point runs, then the applied rate equals `MAX_DISCOUNT_RATE`.
-- `AC-2` — Given any line items, when `compute_total` runs, then the result is
-  never negative.
+- `AC-2` — Given any line items, when checkout totals an order, then the
+  result is never negative.
 
 ## Challenge results
 
@@ -110,12 +108,12 @@ None.
 
 | Obligation | Implementation seam | Paths covered | Tests | Deviations |
 |---|---|---|---|---|
-| INV-1 | rate clamp in discount entry points | `apply_discount_api` | manual spot check | none recorded |
-| INV-2 | `compute_total` | `compute_total` | manual spot check | none recorded |
+| INV-1 | rate clamp in discount entry points | public API path | manual spot check | none recorded |
+| INV-2 | checkout totaling | checkout totaling | manual spot check | none recorded |
 
 ## Verification evidence
 
 | Obligation | Evidence | Result | Limitations |
 |---|---|---|---|
-| AC-1 | spot check on `apply_discount_api` | pass | other entry points not exercised |
+| AC-1 | spot check on the public API discount path | pass | other entry points not exercised |
 | AC-2 | spot check with positive quantities | pass | negative quantities not exercised |

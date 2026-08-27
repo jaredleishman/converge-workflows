@@ -6,6 +6,16 @@ All notable changes to Converge are documented here.
 
 ### Added
 
+- `state_gate.py init` archives a `CLOSED`, `REPLAN`, or `SPLIT` contract under
+  `.converge/archive/` and writes a fresh `PLANNING` pair. Plan calls it
+  instead of overwriting `state.yaml` by hand.
+- Review and Close outcomes require `findings.md` or `closure.md` to exist
+  before the gate records them. `PLANNED` requires `brief.md`.
+- A Critical brief addendum template and a `candidate-checks.md` file so
+  Fast and Standard Plan do not ingest Critical ceremony or candidate-time
+  proof rules.
+- `evals/fixtures/plan-standard/` and `evals/grade_plan.py` for Standard Plan
+  protocol shape.
 - Standard and Critical causal-path completion, a named organizing model, and a
   conditional structural-alternatives branch that stays off for Fast and
   established routine mechanisms.
@@ -15,12 +25,23 @@ All notable changes to Converge are documented here.
   chronology and intermediate candidates, and bounds claims from a single run.
 - A compound-boundary Critical screen with a falsifiable Standard exception,
   plus a conditional lifecycle/ownership matrix and Critical proof obligations
-  in the existing Change Brief.
+  in `templates/brief-critical.md`.
 - A provenance-aware PR #1847 replay and retrospective that separates planning
   coverage, proof fidelity, finite-loop compliance, accuracy, and cost.
 
 ### Changed
 
+- Fast skips Challenge in the Plan skill. Standard remains one pass. Critical
+  remains two.
+- Plan does not implement. Continued execution hands off to Build.
+- Plan Phase 1 reads only workflow and lanes. Build, Verify, and Remediate
+  read `candidate-checks.md` instead of the full scope policy.
+- The Fast/Standard brief template no longer contains the Critical lifecycle
+  matrix. Disposition and budget live only in `state.yaml`.
+- Dropped unused `request.*` and `decision.replan_required` /
+  `decision.split_required` fields.
+- Review-standard and close-delta seeded briefs no longer name the defective
+  functions the grader requires, so copying the brief cannot substring-pass.
 - Plan now selects or synthesizes its mechanism after Map and Challenge, and
   Build records successful local checks before advancing between coherent
   dependency slices while leaving full-candidate proof to Verify.

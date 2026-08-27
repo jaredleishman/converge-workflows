@@ -149,7 +149,8 @@ Converge uses a small project-local protocol:
 ├── brief.md
 ├── state.yaml
 ├── findings.md
-└── closure.md
+├── closure.md
+└── archive/    # previous CLOSED, REPLAN, or SPLIT contracts
 ```
 
 The plugin recommends excluding `.converge/` through `.git/info/exclude` unless

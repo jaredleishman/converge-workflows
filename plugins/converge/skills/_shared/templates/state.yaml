@@ -3,10 +3,7 @@ schema_version: 1
 lane: standard
 stage: plan
 status: PLANNING
-
-request:
-  source: user
-  identifier: null
+predecessor: null
 
 candidate:
   kind: unset
@@ -24,8 +21,6 @@ review_budget:
   closure_used: 0
 
 decision:
-  replan_required: false
-  split_required: false
   blocked_reason: null
   resume_status: null
 

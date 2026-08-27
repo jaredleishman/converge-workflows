@@ -16,7 +16,7 @@ Read:
 - `.converge/brief.md`
 - `.converge/state.yaml`
 - `../_shared/workflow.md`
-- `../_shared/scope-policy.md`
+- `../_shared/candidate-checks.md`
 - `../_shared/artifact-protocol.md`
 
 Then:
@@ -42,7 +42,7 @@ Then:
    them as follow-ups unless they are required by the brief or prevent a
    regression introduced by this change.
 7. Before handing work to Verify, run the planned-mechanism drift checkpoint in
-   `scope-policy.md`. Compare the diff and connected seams with the sealed
+   `candidate-checks.md`. Compare the diff and connected seams with the sealed
    Planned mechanism baseline. Inventory every new or materially changed
    thread/task/queue/callback/signal, transaction or commit point,
    retry/timeout/cancellation path, logical or physical resource owner,

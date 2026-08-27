@@ -1,0 +1,24 @@
+{
+  "scenario": "plan-standard",
+  "description": "A Standard Plan seals a brief without Critical ceremony, records a split decision, and spends no review budget.",
+  "required_headings": [
+    "Outcome",
+    "Non-goals",
+    "Planned mechanism baseline",
+    "Split decision"
+  ],
+  "required_phrases": [
+    "Lane: `standard`"
+  ],
+  "required_any_phrases": ["ONE_CHANGE", "SPLIT"],
+  "forbidden_phrases": [
+    "lifecycle and ownership matrix",
+    "critical proof obligations"
+  ],
+  "state_expectations": {
+    "status": "PLANNED",
+    "lane": "standard",
+    "review_budget.broad_used": 0,
+    "review_budget.closure_used": 0
+  }
+}

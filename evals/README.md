@@ -125,17 +125,24 @@ those static checks are `PROXY` evidence for agent behavior; they cannot by
 themselves prove lane selection, evidence disposition, drift routing, or review
 quality.
 
+- `fixtures/plan-standard/` — measures whether `plan` seals a Standard brief
+  without Critical ceremony and records `PLANNED` with unused review budgets.
+  See its `INSTRUCTIONS.md`.
 - `fixtures/review-standard/` — measures whether the `review` skill is
   batch-complete and sweeps sibling paths. See its `INSTRUCTIONS.md`.
 - `fixtures/close-delta/` — measures whether the `close` skill stays
   delta-only, classifies new issues, and fires the loop breaker on a
   distinct original blocker family instead of starting a third broad
   review. See its `INSTRUCTIONS.md`.
+- `grade_plan.py` — grades a sealed brief and state for Standard-lane
+  protocol shape. Heading and forbidden-ceremony checks are necessary, not
+  sufficient.
 - `grade_review.py` — grades a produced findings or closure file and its state
   against a fixture's `expected.json`. Substring markers make artifact PASS
   necessary, not sufficient; alternative markers allow equivalent terminal
   decisions such as `REPLAN` or `SPLIT`. State assertions check the finite
-  workflow outcome and review budgets.
+  workflow outcome and review budgets. Required code markers must not already
+  appear in the seeded brief.
 
 The scenario files under `scenarios/` remain descriptive replay guides for
 evaluating full workflow runs on real changes. Their hidden answer keys require

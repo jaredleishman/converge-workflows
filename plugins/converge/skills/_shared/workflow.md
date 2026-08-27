@@ -95,12 +95,17 @@ Use these local artifacts:
 ├── brief.md
 ├── state.yaml
 ├── findings.md   # every broad Review, including a clean Review
-└── closure.md    # only when Close is needed
+├── closure.md    # only when Close is needed
+└── archive/      # previous CLOSED, REPLAN, or SPLIT contracts
 ```
 
 One project root or worktree has one active `.converge/` contract. Use a
 separate worktree for a parallel or stacked change. Converge does not namespace
-multiple active contracts inside one root.
+multiple active contracts inside one root. After `CLOSED`, `REPLAN`, or `SPLIT`,
+run the gate's `init` command. It archives the finished contract under
+`.converge/archive/` and writes a fresh `PLANNING` pair. Do not overwrite
+`state.yaml` by hand. Split work that cannot share one proof story into
+separate worktrees, each with its own `init`.
 
 Do not commit these files unless the user explicitly wants durable workflow
 artifacts. Prefer adding `.converge/` to `.git/info/exclude`, not silently

@@ -64,7 +64,8 @@ Build may remain `BUILDING` across interrupted sessions. Verify may return
 `READY_FOR_VERIFY` to `BUILDING` when candidate-owned checks fail. `BLOCKED`
 records the exact prior status; after the blocker is resolved, only the gate's
 `resume` command restores it. Terminal states do not transition. A new contract
-starts from a newly created state file.
+starts with the gate's `init` command, which archives the finished files under
+`.converge/archive/` and writes a fresh `PLANNING` state and brief.
 
 ## Review budget
 
@@ -89,6 +90,7 @@ Skills run it against the project's `.converge/state.yaml`:
 
 ```text
 python3 "<plugin-root>/scripts/state_gate.py" show
+python3 "<plugin-root>/scripts/state_gate.py" init --lane standard
 python3 "<plugin-root>/scripts/state_gate.py" check review
 python3 "<plugin-root>/scripts/state_gate.py" set-status READY_FOR_VERIFY --stage build
 python3 "<plugin-root>/scripts/state_gate.py" candidate capture-worktree
@@ -100,6 +102,13 @@ Rules:
 
 - Check the gate before acting. Review and Close budget is consumed
   automatically when their outcome transition succeeds.
+- `init` creates `.converge/` from the templates, reuses an existing
+  `PLANNING` contract, or archives a `CLOSED` / `REPLAN` / `SPLIT` contract
+  and starts a new one. It refuses to clobber any other live status.
+- `PLANNED` requires `brief.md`. Review outcomes require `findings.md`.
+  Close outcomes require `closure.md`. Write the artifact, then `set-status`.
+  Do not copy budget or disposition into the markdown; `state.yaml` is the
+  machine record.
 - Never edit `broad_used` or `closure_used` by hand.
 - Record finding IDs with repeated `--finding` arguments on
   `REVIEW_FINDINGS`, `TARGETED_FIX`, or a terminal review outcome. Machine lists

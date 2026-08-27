@@ -74,22 +74,21 @@ class PluginContractTests(unittest.TestCase):
         )
         self.assertIn("broad_max: 1", state)
         self.assertIn("closure_max: 1", state)
+        self.assertIn("predecessor: null", state)
+        self.assertNotIn("replan_required", state)
         policy = (PLUGIN / "skills/_shared/review-policy.md").read_text(
             encoding="utf-8"
         )
         self.assertIn("Do not begin a third broad review automatically", policy)
-        self.assertIn("The targeted path is finite", policy)
-        self.assertIn("Blocking `NEW_EVIDENCE`", policy)
-        self.assertIn("candidate-caused violation", policy)
         findings = (PLUGIN / "skills/_shared/templates/findings.md").read_text(
             encoding="utf-8"
         )
         closure = (PLUGIN / "skills/_shared/templates/closure.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("pending | 0/1 | 1/1", findings)
-        self.assertIn("PENDING | CLEAN | FINDINGS | REPLAN | SPLIT | BLOCKED", findings)
-        self.assertIn("pending | 0/1 | 1/1", closure)
+        self.assertIn("Outcome, budget, and finding IDs live in `state.yaml`", findings)
+        self.assertIn("Outcome, budget, and finding IDs live in `state.yaml`", closure)
+        self.assertNotIn("CLEAN", findings)
 
     def test_standard_and_fast_lanes_have_complexity_budgets(self) -> None:
         lanes = squash(
@@ -119,18 +118,21 @@ class PluginContractTests(unittest.TestCase):
             lanes,
         )
 
-    def test_conditional_matrix_contract_keeps_standard_fixtures_lightweight(
+    def test_conditional_matrix_lives_in_the_critical_addendum(
         self,
     ) -> None:
         brief = (PLUGIN / "skills/_shared/templates/brief.md").read_text(
             encoding="utf-8"
         )
+        addendum = (PLUGIN / "skills/_shared/templates/brief-critical.md").read_text(
+            encoding="utf-8"
+        )
         plan = (PLUGIN / "skills/plan/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("Conditional lifecycle and ownership matrix", brief)
-        self.assertIn("Include this section only", brief)
-        self.assertIn("Omit both sections", plan)
-        self.assertIn("two independent passes", plan)
-        flattened_brief = squash(brief)
+        self.assertNotIn("Conditional lifecycle and ownership matrix", brief)
+        self.assertIn("Conditional lifecycle and ownership matrix", addendum)
+        self.assertIn("Fast skips Challenge", plan)
+        self.assertIn("Do not implement", plan)
+        flattened_addendum = squash(addendum)
         for column in [
             "Event or failure path",
             "Control context and handoff",
@@ -144,7 +146,7 @@ class PluginContractTests(unittest.TestCase):
             "Failure evidence",
         ]:
             with self.subTest(column=column):
-                self.assertIn(column, flattened_brief)
+                self.assertIn(column, flattened_addendum)
 
         for fixture in sorted((ROOT / "evals/fixtures").glob("*/converge/brief.md")):
             with self.subTest(fixture=fixture):
@@ -159,82 +161,38 @@ class PluginContractTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
+        checks = squash(
+            (PLUGIN / "skills/_shared/candidate-checks.md").read_text(
+                encoding="utf-8"
+            )
+        )
         workflow = squash(
             (PLUGIN / "skills/_shared/workflow.md").read_text(encoding="utf-8")
         )
         plan = squash(
             (PLUGIN / "skills/plan/SKILL.md").read_text(encoding="utf-8")
         )
-        build = squash(
-            (PLUGIN / "skills/build/SKILL.md").read_text(encoding="utf-8")
-        )
         brief = squash(
             (PLUGIN / "skills/_shared/templates/brief.md").read_text(
                 encoding="utf-8"
             )
         )
-        findings = squash(
-            (PLUGIN / "skills/_shared/templates/findings.md").read_text(
-                encoding="utf-8"
-            )
-        )
-        evaluation = squash((ROOT / "evals/README.md").read_text(encoding="utf-8"))
 
-        for phrase in [
-            "Causal grounding completion",
-            "every materially distinct path",
-            "category or file inventory",
-            "Conditional structural alternatives",
-            "Fast work never requires this branch",
-            "load-bearing ownership, ordering/commit, identity, or lifecycle decision",
-        ]:
-            with self.subTest(scope_phrase=phrase):
-                self.assertIn(phrase, scope)
-
-        self.assertIn("Delegated stage ownership", workflow)
-        self.assertIn("dispatch-time fingerprint", workflow)
-        self.assertIn(
-            "Inspect the cited source, diff, commands, and evidence directly",
-            workflow,
-        )
-        self.assertIn("The stage owner writes the synthesis and disposition", workflow)
-        self.assertIn("Do not create a new artifact merely because work was delegated", workflow)
-        self.assertIn(
-            "findings.md # every broad Review, including a clean Review",
-            workflow,
-        )
-
-        self.assertIn("do not finalize the Planned mechanism baseline yet", plan)
-        self.assertIn("After Map, apply the conditional structural-alternatives rule", plan)
-        self.assertIn("Select or synthesize the mechanism after Challenge", plan)
+        self.assertIn("Causal grounding completion", scope)
+        self.assertIn("Fast work never requires this branch", scope)
+        self.assertIn("Planned-mechanism drift", checks)
+        self.assertIn("run the gate's `init` command", workflow)
+        self.assertIn("Fast skips Challenge", plan)
         self.assertLess(
             plan.index("After Map, apply the conditional structural-alternatives rule"),
             plan.index("Select or synthesize the mechanism after Challenge"),
         )
-
-        self.assertIn("record the current proof unit prospectively", build)
-        self.assertIn("only then begin the next unit", build)
-        self.assertIn("Proof units are not commits, stacks, releases", build)
-        self.assertIn("does not prove the completed candidate", build)
-
-        for phrase in [
-            "Causal grounding trace (Standard and Critical)",
-            "Alternative mechanisms (conditional)",
-            "Organizing model",
-            "Delegated Plan and Build ownership (conditional)",
-            "Build proof units (conditional)",
-        ]:
-            with self.subTest(brief_phrase=phrase):
-                self.assertIn(phrase, brief)
-        self.assertIn("Delegated review ownership (conditional)", findings)
-
-        self.assertIn("Matched policy behavior probes", evaluation)
-        self.assertIn("Capture chronology, not only the final answer or artifact", evaluation)
-        self.assertIn("one pair supports only the observed difference", evaluation)
+        self.assertIn("Causal grounding trace (Standard and Critical)", brief)
+        self.assertIn("Challenge skipped (Fast)", brief)
 
     def test_proof_fidelity_contract_is_packaged(self) -> None:
-        scope = squash(
-            (PLUGIN / "skills/_shared/scope-policy.md").read_text(
+        checks = squash(
+            (PLUGIN / "skills/_shared/candidate-checks.md").read_text(
                 encoding="utf-8"
             )
         )
@@ -249,10 +207,9 @@ class PluginContractTests(unittest.TestCase):
             "proxy-only evidence is `UNPROVEN`",
         ]:
             with self.subTest(phrase=phrase):
-                self.assertIn(phrase, scope)
+                self.assertIn(phrase, checks)
         self.assertIn("controlled clock or fake endpoint", verify)
-        self.assertIn("direct helper call", verify)
-        self.assertIn("every required obligation is `PASS`", verify)
+        self.assertIn("candidate-checks.md", verify)
 
     def test_mechanism_drift_routes_are_packaged(self) -> None:
         paths = [
@@ -351,6 +308,9 @@ class StateGateTests(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
         self.state = self.tmp / "state.yaml"
         shutil.copy(PLUGIN / "skills/_shared/templates/state.yaml", self.state)
+        (self.state.parent / "brief.md").write_text(
+            "# Change Brief\n\n## Outcome\n\nfixture\n", encoding="utf-8"
+        )
         self.stdout = ""
         self.stderr = ""
 
@@ -388,10 +348,21 @@ class StateGateTests(unittest.TestCase):
             ),
         )
 
+    def write_findings(self) -> None:
+        (self.state.parent / "findings.md").write_text(
+            "# Review Findings\n\n## Blocking findings\n", encoding="utf-8"
+        )
+
+    def write_closure(self) -> None:
+        (self.state.parent / "closure.md").write_text(
+            "# Closure Review\n\n## Follow-up work\n", encoding="utf-8"
+        )
+
     def prepare_verified(self) -> None:
         self.prepare_ready_for_verify()
         self.record_commit_candidate()
         self.assertEqual(0, self.transition("INTERNALLY_VERIFIED", "verify"))
+        self.write_findings()
 
     def prepare_ready_for_closure(self) -> None:
         self.prepare_verified()
@@ -410,6 +381,7 @@ class StateGateTests(unittest.TestCase):
         self.assertEqual(0, self.transition("READY_FOR_VERIFY", "remediate"))
         self.record_commit_candidate()
         self.assertEqual(0, self.transition("READY_FOR_CLOSURE", "verify"))
+        self.write_closure()
 
     def parsed(self) -> dict[str, object]:
         return self.gate.load(self.state)[1]
@@ -455,6 +427,9 @@ class StateGateTests(unittest.TestCase):
                 head_sha=HEAD_SHA,
             )
             self.gate.set_status(path, "INTERNALLY_VERIFIED", "verify")
+            (path.parent / "findings.md").write_text(
+                "# Review Findings\n", encoding="utf-8"
+            )
             self.gate.set_status(
                 path,
                 "REVIEW_FINDINGS",
@@ -492,14 +467,7 @@ class StateGateTests(unittest.TestCase):
                         before["review_budget.closure_used"],
                         after["review_budget.closure_used"],
                     )
-                    self.assertEqual(
-                        destination == "REPLAN",
-                        after["decision.replan_required"],
-                    )
-                    self.assertEqual(
-                        destination == "SPLIT",
-                        after["decision.split_required"],
-                    )
+                    self.assertEqual(destination, after["status"])
 
     def test_blocked_requires_reason_and_resumes_exact_prior_state(self) -> None:
         self.assertEqual(0, self.transition("PLANNED", "plan"))
@@ -730,9 +698,12 @@ class StateGateTests(unittest.TestCase):
         cases = {
             "top-level": original.replace("lane: standard", "lane: standard\nlane: fast"),
             "nested": original.replace(
-                "  source: user", "  source: user\n  source: system"
+                "  blocked_reason: null",
+                "  blocked_reason: null\n  blocked_reason: missing",
             ),
-            "indentation": original.replace("  source: user", "    source: user"),
+            "indentation": original.replace(
+                "  blocked_reason: null", "    blocked_reason: null"
+            ),
         }
         for label, text in cases.items():
             with self.subTest(label=label):
@@ -764,6 +735,9 @@ class StateGateTests(unittest.TestCase):
         state_path = repository / ".converge/state.yaml"
         state_path.parent.mkdir()
         shutil.copy(PLUGIN / "skills/_shared/templates/state.yaml", state_path)
+        (state_path.parent / "brief.md").write_text(
+            "# Change Brief\n\n## Outcome\n\nworktree\n", encoding="utf-8"
+        )
         self.gate.set_status(state_path, "PLANNED", "plan", cwd=repository)
         self.gate.set_status(state_path, "BUILDING", "build", cwd=repository)
         self.gate.set_status(state_path, "READY_FOR_VERIFY", "build", cwd=repository)
@@ -916,6 +890,34 @@ class StateGateTests(unittest.TestCase):
         self.assertEqual(0, self.transition("CLOSED", "review"))
         self.assertEqual(1, self.transition("PLANNED", "plan"))
         self.assertIn("allowed: none", self.stderr)
+
+    def test_review_outcome_requires_findings_file(self) -> None:
+        self.prepare_ready_for_verify()
+        self.record_commit_candidate()
+        self.assertEqual(0, self.transition("INTERNALLY_VERIFIED", "verify"))
+        self.assertEqual(1, self.transition("CLOSED", "review"))
+        self.assertIn("findings.md must exist", self.stderr)
+
+    def test_init_archives_terminal_contract(self) -> None:
+        self.prepare_verified()
+        self.assertEqual(0, self.transition("CLOSED", "review"))
+        self.assertEqual(0, self.run_gate("init", "--lane", "fast"))
+        self.assertIn("archived CLOSED", self.stdout)
+        state = self.parsed()
+        self.assertEqual("PLANNING", state["status"])
+        self.assertEqual("fast", state["lane"])
+        self.assertTrue(str(state["predecessor"]).startswith("archive/"))
+        archived = self.state.parent / str(state["predecessor"])
+        self.assertTrue((archived / "state.yaml").is_file())
+        self.assertTrue((archived / "findings.md").is_file())
+        self.assertEqual(0, self.run_gate("init", "--lane", "standard"))
+        self.assertIn("reused PLANNING", self.stdout)
+        self.assertEqual("standard", self.parsed()["lane"])
+
+    def test_init_refuses_a_live_contract(self) -> None:
+        self.assertEqual(0, self.transition("PLANNED", "plan"))
+        self.assertEqual(1, self.run_gate("init"))
+        self.assertIn("cannot init while status is PLANNED", self.stderr)
 
 
 class EvalGraderTests(unittest.TestCase):

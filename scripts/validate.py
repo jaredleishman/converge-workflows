@@ -121,11 +121,16 @@ def validate() -> None:
         found.add(folder)
     if found != expected_skills:
         fail(f"skills differ from expected set: found {sorted(found)}")
+    for folder in expected_skills:
+        meta = frontmatter(PLUGIN / "skills" / folder / "SKILL.md")
+        if meta.get("disable-model-invocation") != "true":
+            fail(f"{folder} skill must set disable-model-invocation: true")
 
     required_shared = [
         "workflow.md", "lanes.md", "scope-policy.md", "review-policy.md",
-        "artifact-protocol.md", "templates/brief.md", "templates/state.yaml",
-        "templates/findings.md", "templates/closure.md",
+        "artifact-protocol.md", "candidate-checks.md",
+        "templates/brief.md", "templates/brief-critical.md",
+        "templates/state.yaml", "templates/findings.md", "templates/closure.md",
     ]
     for rel in required_shared:
         if not (PLUGIN / "skills/_shared" / rel).is_file():
@@ -155,25 +160,32 @@ def validate() -> None:
             fail(f"review policy is missing Critical review contract: {phrase}")
 
     state_template = (PLUGIN / "skills/_shared/templates/state.yaml").read_text(encoding="utf-8")
-    for line in ["broad_max: 1", "closure_max: 1", "resume_status: null"]:
+    for line in ["broad_max: 1", "closure_max: 1", "resume_status: null", "predecessor: null"]:
         if line not in state_template:
             fail(f"state template must contain {line}")
+    for forbidden in ["replan_required", "split_required"]:
+        if forbidden in state_template:
+            fail(f"state template still contains dropped field {forbidden}")
+    if "\nrequest:" in "\n" + state_template:
+        fail("state template still contains dropped field request")
 
     scope_policy = (PLUGIN / "skills/_shared/scope-policy.md").read_text(encoding="utf-8")
     for phrase in ["Non-waivable baseline guarantees", "Authorization", "data integrity"]:
         if phrase.lower() not in scope_policy.lower():
             fail(f"scope policy is missing required baseline phrase: {phrase}")
 
+    candidate_checks = (PLUGIN / "skills/_shared/candidate-checks.md").read_text(
+        encoding="utf-8"
+    )
     for phrase in [
-        "Conditional lifecycle and ownership matrix",
         "BOUNDARY_DIRECT",
         "BOUNDARY_FAITHFUL",
         "proxy-only evidence is `UNPROVEN`",
         "Planned-mechanism drift",
-        "Identity namespace, collision rule, and deduplication behavior",
+        "Identity namespace, collision, or deduplication rule",
     ]:
-        if phrase.lower() not in flattened(scope_policy):
-            fail(f"scope policy is missing lifecycle/proof contract: {phrase}")
+        if phrase.lower() not in flattened(candidate_checks):
+            fail(f"candidate checks are missing proof/drift contract: {phrase}")
 
     for phrase in [
         "Causal grounding completion",
@@ -187,6 +199,9 @@ def validate() -> None:
         if phrase.lower() not in flattened(scope_policy):
             fail(f"scope policy is missing standalone planning contract: {phrase}")
 
+    if "conditional lifecycle and ownership matrix" not in flattened(scope_policy):
+        fail("scope policy is missing the lifecycle matrix contract")
+
     workflow = (PLUGIN / "skills/_shared/workflow.md").read_text(encoding="utf-8")
     for phrase in [
         "Delegated stage ownership",
@@ -195,6 +210,7 @@ def validate() -> None:
         "The stage owner writes the synthesis and disposition",
         "Do not create a new artifact merely because work was delegated",
         "findings.md # every broad Review, including a clean Review",
+        "run the gate's `init` command",
     ]:
         if phrase.lower() not in flattened(workflow):
             fail(f"workflow is missing delegated-ownership contract: {phrase}")
@@ -213,11 +229,28 @@ def validate() -> None:
     brief_template = (PLUGIN / "skills/_shared/templates/brief.md").read_text(
         encoding="utf-8"
     )
+    brief_critical = (PLUGIN / "skills/_shared/templates/brief-critical.md").read_text(
+        encoding="utf-8"
+    )
+    if "conditional lifecycle and ownership matrix" in flattened(brief_template):
+        fail("Standard brief template must not contain the Critical lifecycle matrix")
+    if "critical proof obligations" in flattened(brief_template):
+        fail("Standard brief template must not contain Critical proof obligations")
     for phrase in [
         "Planned mechanism baseline",
+        "A required production boundary cannot be `PASS` on proxy-only evidence",
+        "Causal grounding trace (Standard and Critical)",
+        "Alternative mechanisms (conditional)",
+        "Organizing model",
+        "Delegated Plan and Build ownership (conditional)",
+        "Build proof units (conditional)",
+        "Challenge skipped (Fast)",
+    ]:
+        if phrase.lower() not in flattened(brief_template):
+            fail(f"brief template is missing standalone workflow field: {phrase}")
+    for phrase in [
         "Conditional lifecycle and ownership matrix",
         "Critical proof obligations",
-        "A required production boundary cannot be `PASS` on proxy-only evidence",
         "Election or visibility effect",
         "Persistence owner and timing",
         "Resource owner and release",
@@ -225,19 +258,10 @@ def validate() -> None:
         "Transaction or effect commit",
         "Retry, cleanup, and next attempt",
         "Failure evidence",
+        "Independent Challenge passes",
     ]:
-        if phrase.lower() not in flattened(brief_template):
-            fail(f"brief template is missing Critical contract: {phrase}")
-
-    for phrase in [
-        "Causal grounding trace (Standard and Critical)",
-        "Alternative mechanisms (conditional)",
-        "Organizing model",
-        "Delegated Plan and Build ownership (conditional)",
-        "Build proof units (conditional)",
-    ]:
-        if phrase.lower() not in flattened(brief_template):
-            fail(f"brief template is missing standalone workflow field: {phrase}")
+        if phrase.lower() not in flattened(brief_critical):
+            fail(f"Critical brief addendum is missing contract: {phrase}")
 
     for fixture in sorted((ROOT / "evals/fixtures").glob("*/converge/brief.md")):
         text = fixture.read_text(encoding="utf-8").lower()
@@ -258,6 +282,9 @@ def validate() -> None:
         "After Map, apply the conditional structural-alternatives rule",
         "cosmetic variants do not count",
         "one coherent organizing model",
+        "Fast skips Challenge",
+        "Do not implement",
+        "state_gate.py\" init",
     ]:
         if phrase.lower() not in flattened(plan_skill):
             fail(f"plan skill is missing planning sequence contract: {phrase}")
@@ -290,9 +317,12 @@ def validate() -> None:
         "Full-candidate cross-lens sweep",
         "Delegated review ownership (conditional)",
         "Synthesis-owner inspection and discrepancies",
+        "Outcome, budget, and finding IDs live in `state.yaml`",
     ]:
         if phrase.lower() not in flattened(findings_template):
             fail(f"findings template is missing reviewer audit field: {phrase}")
+    if "pending | clean | findings" in flattened(findings_template):
+        fail("findings template still duplicates disposition vocabulary")
 
     critical_scenario = (ROOT / "evals/scenarios/critical.md").read_text(
         encoding="utf-8"
@@ -354,9 +384,32 @@ def validate() -> None:
         "write-once",
         "TARGETED_FIX",
         "resume",
+        "init",
+        "brief.md",
+        "findings.md",
+        "closure.md",
     ]:
         if phrase not in artifact_protocol:
             fail(f"artifact protocol is missing required gate contract: {phrase}")
+
+    for expected_path in sorted((ROOT / "evals/fixtures").glob("*/expected.json")):
+        expected = json.loads(expected_path.read_text(encoding="utf-8"))
+        fixture = expected_path.parent
+        brief_path = fixture / "converge/brief.md"
+        src_dir = fixture / "src"
+        if not brief_path.is_file() or not src_dir.is_dir():
+            continue
+        brief = brief_path.read_text(encoding="utf-8")
+        src = "\n".join(
+            path.read_text(encoding="utf-8") for path in sorted(src_dir.glob("*.py"))
+        )
+        for family in expected.get("families", []):
+            for marker in family.get("required_markers", []):
+                if marker in src and marker.lower() in brief.lower():
+                    fail(
+                        f"{brief_path.relative_to(ROOT)} leaks code marker "
+                        f"{marker!r} from {expected_path.parent.name}"
+                    )
 
     for path in ROOT.rglob("*"):
         if path.is_symlink() and not path.exists():

@@ -26,10 +26,6 @@ For each new blocking issue record:
 - Violated sealed obligation or baseline guarantee:
 - Classification rationale:
 
-## Decision
+## Follow-up work
 
-- Outcome: `CLOSED | TARGETED_FIX | REPLAN | SPLIT | BLOCKED`
-- Closure review budget used: `pending | 0/1 | 1/1`
-- Targeted finding IDs, if any:
-- Targeted confirmation still required: `yes | no`
-- Follow-up work:
+Outcome, budget, and finding IDs live in `state.yaml`. Do not copy them here.

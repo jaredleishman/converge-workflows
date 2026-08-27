@@ -16,7 +16,7 @@ Read:
 - `.converge/brief.md`
 - `.converge/state.yaml`
 - `../_shared/workflow.md`
-- `../_shared/scope-policy.md`
+- `../_shared/candidate-checks.md`
 - `../_shared/artifact-protocol.md`
 
 Then:
@@ -38,7 +38,7 @@ Then:
    cheap-to-expensive order. Do not claim checks that were not run. If a
    formatter-capable check changes candidate files, verification is invalid;
    do not silently accept, patch, or revert the drift.
-4. Classify material evidence under `scope-policy.md` as `BOUNDARY_DIRECT`,
+4. Classify material evidence under `candidate-checks.md` as `BOUNDARY_DIRECT`,
    `BOUNDARY_FAITHFUL`, `PROXY`, or `UNAVAILABLE`. For every material test,
    record the production event or boundary it exercises, the broken mechanism
    or injected failure it detects, and proxy or mock limitations. A controlled

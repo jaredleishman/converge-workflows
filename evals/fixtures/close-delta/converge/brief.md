@@ -2,9 +2,7 @@
 
 ## Metadata
 
-- Request source: eval fixture `close-delta`
 - Lane: `standard`
-- Status: `READY_FOR_CLOSURE`
 - Last updated: seeded
 
 ## Outcome
@@ -35,8 +33,8 @@ most once per order.
 
 ### Entry points
 
-- `src/refunds.py`: `issue_refund`, `issue_refund_admin`
-- `src/refunds.py`: `format_refund_receipt` (display only)
+- Standard refund path and admin-console refund path in `src/refunds.py`
+- Receipt rendering (display only)
 
 ### Sources of truth and provenance
 
@@ -110,12 +108,12 @@ None.
 
 | Obligation | Implementation seam | Paths covered | Tests | Deviations |
 |---|---|---|---|---|
-| INV-1 | remaining-total clamp in refund entry points | `issue_refund` | manual spot check | none recorded |
-| INV-2 | double-refund guard in refund entry points | `issue_refund` | manual spot check | none recorded |
+| INV-1 | remaining-total clamp in refund entry points | standard refund path | manual spot check | none recorded |
+| INV-2 | double-refund guard in refund entry points | standard refund path | manual spot check | none recorded |
 
 ## Verification evidence
 
 | Obligation | Evidence | Result | Limitations |
 |---|---|---|---|
-| AC-1 | re-run spot check on `issue_refund` after remediation | pass | admin path not exercised |
-| AC-2 | re-run spot check on `issue_refund` after remediation | pass | repeated-refund sequence only |
+| AC-1 | re-run spot check on the standard refund path after remediation | pass | admin path not exercised |
+| AC-2 | re-run spot check on the standard refund path after remediation | pass | repeated-refund sequence only |

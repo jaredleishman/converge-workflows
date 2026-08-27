@@ -56,7 +56,4 @@ when the Critical reviewer audit above already records these facts.
 
 ## Proposed contract amendments
 
-## Review disposition
-
-- Status: `PENDING | CLEAN | FINDINGS | REPLAN | SPLIT | BLOCKED`
-- Broad review budget used: `pending | 0/1 | 1/1`
+Outcome, budget, and finding IDs live in `state.yaml`. Do not copy them here.

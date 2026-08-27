@@ -49,17 +49,18 @@ Then:
    sealed mechanism, keep that ID open for the one targeted confirmation;
    otherwise replan or split. Never demote a candidate-caused baseline
    regression to a follow-up.
-7. Write `.converge/closure.md`, then run `candidate check` again; for a pull
-   request, resolve and pass its current head again. Record one outcome through
-   the gate: `CLOSED`; `TARGETED_FIX --finding CLOSE-1` for a small remediation-caused
+7. Write `.converge/closure.md` from the template without copying budget or
+   disposition. Then run `candidate check` again; for a pull request, resolve
+   and pass its current head again. Record one outcome through the gate:
+   `CLOSED`; `TARGETED_FIX --finding CLOSE-1` for a small remediation-caused
    defect; `TARGETED_FIX --finding REV-1` to keep an incomplete prior family
    open; `REPLAN` or `SPLIT` with finding IDs for an original miss or scope
    expansion or distinct blocking new evidence; or `BLOCKED --reason ...` when
    evidence is unavailable. A successful budgeted Close outcome consumes
    closure budget in the same state-file update; `BLOCKED` does not. It closes
    prior IDs that are not repeated on the outcome and keeps repeated IDs open.
-   After the gate succeeds, update `closure.md` with the actual outcome and
-   budget. Never edit budget or finding-list fields in `state.yaml` by hand.
+   The gate refuses the outcome if `closure.md` is missing. Never edit budget
+   or finding-list fields in `state.yaml` by hand.
 
 A small fix-introduced issue receives at most one targeted Remediate and Verify
 confirmation. Targeted confirmation cannot return to another fix; it closes,
