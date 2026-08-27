@@ -153,6 +153,85 @@ class PluginContractTests(unittest.TestCase):
                 self.assertNotIn("lifecycle and ownership matrix", text.lower())
                 self.assertNotIn("critical proof obligations", text.lower())
 
+    def test_standalone_planning_execution_contract_is_packaged(self) -> None:
+        scope = squash(
+            (PLUGIN / "skills/_shared/scope-policy.md").read_text(
+                encoding="utf-8"
+            )
+        )
+        workflow = squash(
+            (PLUGIN / "skills/_shared/workflow.md").read_text(encoding="utf-8")
+        )
+        plan = squash(
+            (PLUGIN / "skills/plan/SKILL.md").read_text(encoding="utf-8")
+        )
+        build = squash(
+            (PLUGIN / "skills/build/SKILL.md").read_text(encoding="utf-8")
+        )
+        brief = squash(
+            (PLUGIN / "skills/_shared/templates/brief.md").read_text(
+                encoding="utf-8"
+            )
+        )
+        findings = squash(
+            (PLUGIN / "skills/_shared/templates/findings.md").read_text(
+                encoding="utf-8"
+            )
+        )
+        evaluation = squash((ROOT / "evals/README.md").read_text(encoding="utf-8"))
+
+        for phrase in [
+            "Causal grounding completion",
+            "every materially distinct path",
+            "category or file inventory",
+            "Conditional structural alternatives",
+            "Fast work never requires this branch",
+            "load-bearing ownership, ordering/commit, identity, or lifecycle decision",
+        ]:
+            with self.subTest(scope_phrase=phrase):
+                self.assertIn(phrase, scope)
+
+        self.assertIn("Delegated stage ownership", workflow)
+        self.assertIn("dispatch-time fingerprint", workflow)
+        self.assertIn(
+            "Inspect the cited source, diff, commands, and evidence directly",
+            workflow,
+        )
+        self.assertIn("The stage owner writes the synthesis and disposition", workflow)
+        self.assertIn("Do not create a new artifact merely because work was delegated", workflow)
+        self.assertIn(
+            "findings.md # every broad Review, including a clean Review",
+            workflow,
+        )
+
+        self.assertIn("do not finalize the Planned mechanism baseline yet", plan)
+        self.assertIn("After Map, apply the conditional structural-alternatives rule", plan)
+        self.assertIn("Select or synthesize the mechanism after Challenge", plan)
+        self.assertLess(
+            plan.index("After Map, apply the conditional structural-alternatives rule"),
+            plan.index("Select or synthesize the mechanism after Challenge"),
+        )
+
+        self.assertIn("record the current proof unit prospectively", build)
+        self.assertIn("only then begin the next unit", build)
+        self.assertIn("Proof units are not commits, stacks, releases", build)
+        self.assertIn("does not prove the completed candidate", build)
+
+        for phrase in [
+            "Causal grounding trace (Standard and Critical)",
+            "Alternative mechanisms (conditional)",
+            "Organizing model",
+            "Delegated Plan and Build ownership (conditional)",
+            "Build proof units (conditional)",
+        ]:
+            with self.subTest(brief_phrase=phrase):
+                self.assertIn(phrase, brief)
+        self.assertIn("Delegated review ownership (conditional)", findings)
+
+        self.assertIn("Matched policy behavior probes", evaluation)
+        self.assertIn("Capture chronology, not only the final answer or artifact", evaluation)
+        self.assertIn("one pair supports only the observed difference", evaluation)
+
     def test_proof_fidelity_contract_is_packaged(self) -> None:
         scope = squash(
             (PLUGIN / "skills/_shared/scope-policy.md").read_text(

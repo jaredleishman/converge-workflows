@@ -6,6 +6,13 @@ All notable changes to Converge are documented here.
 
 ### Added
 
+- Standard and Critical causal-path completion, a named organizing model, and a
+  conditional structural-alternatives branch that stays off for Fast and
+  established routine mechanisms.
+- Optional delegated-stage ownership and prospective Build proof-unit records
+  in the existing brief and findings artifacts.
+- Matched policy behavior-probe guidance that freezes inputs, captures
+  chronology and intermediate candidates, and bounds claims from a single run.
 - A compound-boundary Critical screen with a falsifiable Standard exception,
   plus a conditional lifecycle/ownership matrix and Critical proof obligations
   in the existing Change Brief.
@@ -14,6 +21,9 @@ All notable changes to Converge are documented here.
 
 ### Changed
 
+- Plan now selects or synthesizes its mechanism after Map and Challenge, and
+  Build records successful local checks before advancing between coherent
+  dependency slices while leaving full-candidate proof to Verify.
 - Plan now seals the planned mechanism baseline, and Build, Remediate, and
   Verify explicitly route material ownership or failure-model drift to REPLAN
   or SPLIT.

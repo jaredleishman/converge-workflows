@@ -62,6 +62,16 @@ a concrete scope reason.
 
 ### Migration, rollout, and mixed-version boundaries
 
+### Causal grounding trace (Standard and Critical)
+
+Omit for Fast. Trace every materially distinct mapped path in execution order,
+or give a concrete not-applicable reason. Merge identical tails. When the
+Critical lifecycle and ownership matrix applies, reference its rows instead of
+duplicating them here.
+
+| Material path | Trigger through ownership, mutation/effect, failure/recovery, durable result, and next consumer or attempt | Not-applicable reason |
+|---|---|---|
+
 ## Proposed change
 
 Describe the smallest coherent mechanism. Avoid implementation choreography.
@@ -71,6 +81,8 @@ Describe the smallest coherent mechanism. Avoid implementation choreography.
 Record the approved mechanism, ownership, ordering, identity, and failure-model
 decisions before Build. Later Map observations may add facts but cannot make a
 different mechanism retroactively planned.
+
+- Organizing model:
 
 ## Conditional lifecycle and ownership matrix
 
@@ -102,6 +114,18 @@ Include this section only for material Critical boundaries; otherwise omit it.
 
 ## Challenge results
 
+### Alternative mechanisms (conditional)
+
+Include only when `scope-policy.md` triggers structural alternatives. Compare
+at least two mechanisms with a load-bearing difference before selecting or
+synthesizing the baseline.
+
+| Candidate | Caller-visible behavior | Organizing model | Ownership, ordering, identity, and failure | Complexity and proof burden | Dangerous false-success response |
+|---|---|---|---|---|---|
+
+- Selection or synthesis:
+- Rationale:
+
 ### Independent passes
 
 For Critical work, record both independent passes, their exact planning
@@ -125,9 +149,26 @@ candidate, primary lens, and limitations. Omit this table for other lanes.
 
 ## Implementation crosswalk
 
-Build fills this in.
+Build fills this in. Plan and Build also record any delegated work here so the
+stage owner can inspect and reconcile it without creating another artifact.
 
 | Obligation, including applicable BGs | Implementation seam | Paths covered | Tests | Deviations |
+|---|---|---|---|---|
+
+### Delegated Plan and Build ownership (conditional)
+
+Omit when work is not delegated.
+
+| Stage and delegate | Bounded scope and seams | Candidate identity and owned paths at dispatch | Success criteria | Owner-inspected evidence and discrepancies | Reconciliation and disposition |
+|---|---|---|---|---|---|
+
+### Build proof units (conditional)
+
+Include when Build has more than one coherent dependency slice. Record each
+unit before editing it and record its successful local check before starting
+the next. For one indivisible change, use one compact crosswalk note instead.
+
+| Unit | Coherent dependency slice | Owned paths | Local check before advancement | Result |
 |---|---|---|---|---|
 
 ## Verification evidence

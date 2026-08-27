@@ -58,6 +58,39 @@ substring matches are never efficacy evidence. Record hindsight contamination,
 missing source snapshots, unavailable tools, and candidate-head gaps as
 limitations rather than silently filling them in.
 
+## Matched policy behavior probes
+
+Use a matched behavior probe before adopting workflow policy based mainly on a
+plausible instruction. Freeze and hash the request, content-only source,
+released control policy, candidate treatment overlay, hidden semantic rubric,
+host/model/context, tool access, and budget before either condition runs. Use
+fresh isolated contexts. The treatment condition differs only by the candidate
+policy overlay; do not reveal the rubric or expected behavior to either agent.
+
+Capture chronology, not only the final answer or artifact. Preserve delegate
+dispatch and follow-up, edit and check order, intermediate candidate
+fingerprints or source snapshots, command logs, and the final candidate. A
+finished table can be backfilled and therefore does not prove that an owner
+inspected delegated evidence or that a local check passed before the next Build
+unit began. Treat missing timestamps or intermediate state as a limitation.
+
+Adjudicate semantically against the hidden rubric. Useful dimensions include:
+
+- Completion of every materially distinct causal path
+- Structurally different alternatives when the mapped trigger applies
+- One explicit organizing model for the selected mechanism
+- Direct owner inspection, discrepancy recording, and delegated-work
+  reconciliation
+- Prospective Build units and successful local checks before advancement
+- Fast and ordinary Standard lane cost when conditional branches do not apply
+
+Static contract checks remain `PROXY`. An isolated matched run that preserves
+the intended control path may provide `BOUNDARY_FAITHFUL` protocol evidence,
+but one pair supports only the observed difference on that task and model
+family. It does not establish lower defect rates, production reliability, or
+general superiority. Repeat across representative changes before making an
+efficacy claim.
+
 ## Dogfood evidence
 
 Fixtures test whether an agent follows the protocol. They do not prove that the

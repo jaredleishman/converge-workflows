@@ -15,6 +15,50 @@ behavior:
 
 Broaden only when repository evidence connects a path to the behavior.
 
+## Causal grounding completion
+
+For Standard and Critical work, Map is complete only when every materially
+distinct path revealed by the review surface is connected in execution order:
+
+- Trigger or entry point
+- Decision and control or resource owner
+- Mutation, durable write, or external effect, including no-mutation outcomes
+- Failure, recovery, cleanup, or cancellation behavior
+- Durable result
+- Next attempt or downstream consumer
+
+A category or file inventory and one representative happy path are not enough.
+Merge paths after their behavior becomes identical; do not repeat a shared
+tail. Close an irrelevant path with a concrete not-applicable reason. When the
+Critical lifecycle and ownership matrix below applies, its event rows satisfy
+this trace requirement; do not restate the same path in a second format.
+
+Before Plan seals, name one repository-appropriate organizing model that makes
+the important ownership, ordering, identity, state, and failure decisions
+coherent. This is a description of the selected mechanism, not a requirement
+to introduce a framework or abstraction.
+
+## Conditional structural alternatives
+
+After Map and before the Planned mechanism baseline is final, compare at least
+two structurally different mechanisms when Map exposes material novelty or
+high-risk ambiguity in any of these areas:
+
+- Concurrency or logical/physical resource ownership
+- Lifecycle, persistent state, identity, or partitioning
+- Retry, timeout, cancellation, recovery, or partial completion
+- A boundary or side effect with credible owners whose commit or lifecycle
+  consequences differ
+
+Fast work never requires this branch. Do not trigger it for a routine use of an
+established repository pattern, naming or helper-layout choices, or alternatives
+that preserve every load-bearing decision. When triggered, the candidates must
+differ in at least one load-bearing ownership, ordering/commit, identity, or
+lifecycle decision. Compare caller-visible behavior, organizing model,
+ownership and ordering, identity and failure behavior, complexity and proof
+burden, and the dangerous false successes each design prevents. Record why one
+candidate was selected or how the final mechanism synthesizes them.
+
 ## Conditional lifecycle and ownership matrix
 
 Use the matrix in the existing Change Brief when a Critical change's

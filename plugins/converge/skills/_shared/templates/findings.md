@@ -29,6 +29,14 @@ primary lens is an emphasis, not a scope limit.
 - Synthesis owner:
 - Synthesis limitations:
 
+## Delegated review ownership (conditional)
+
+Use for a delegated non-Critical Review. Omit when Review is not delegated or
+when the Critical reviewer audit above already records these facts.
+
+| Reviewer | Bounded scope and relevant seams | Exact candidate identity | Success criteria | Synthesis-owner inspection and discrepancies | Reconciliation and disposition |
+|---|---|---|---|---|---|
+
 ## Blocking findings
 
 ### REV-1 — [P1] Title

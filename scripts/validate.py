@@ -175,6 +175,30 @@ def validate() -> None:
         if phrase.lower() not in flattened(scope_policy):
             fail(f"scope policy is missing lifecycle/proof contract: {phrase}")
 
+    for phrase in [
+        "Causal grounding completion",
+        "every materially distinct path",
+        "category or file inventory",
+        "organizing model",
+        "Conditional structural alternatives",
+        "Fast work never requires this branch",
+        "load-bearing ownership, ordering/commit, identity, or lifecycle decision",
+    ]:
+        if phrase.lower() not in flattened(scope_policy):
+            fail(f"scope policy is missing standalone planning contract: {phrase}")
+
+    workflow = (PLUGIN / "skills/_shared/workflow.md").read_text(encoding="utf-8")
+    for phrase in [
+        "Delegated stage ownership",
+        "dispatch-time fingerprint",
+        "Inspect the cited source, diff, commands, and evidence directly",
+        "The stage owner writes the synthesis and disposition",
+        "Do not create a new artifact merely because work was delegated",
+        "findings.md # every broad Review, including a clean Review",
+    ]:
+        if phrase.lower() not in flattened(workflow):
+            fail(f"workflow is missing delegated-ownership contract: {phrase}")
+
     lanes = (PLUGIN / "skills/_shared/lanes.md").read_text(encoding="utf-8")
     for phrase in [
         "three or more boundary types",
@@ -205,6 +229,16 @@ def validate() -> None:
         if phrase.lower() not in flattened(brief_template):
             fail(f"brief template is missing Critical contract: {phrase}")
 
+    for phrase in [
+        "Causal grounding trace (Standard and Critical)",
+        "Alternative mechanisms (conditional)",
+        "Organizing model",
+        "Delegated Plan and Build ownership (conditional)",
+        "Build proof units (conditional)",
+    ]:
+        if phrase.lower() not in flattened(brief_template):
+            fail(f"brief template is missing standalone workflow field: {phrase}")
+
     for fixture in sorted((ROOT / "evals/fixtures").glob("*/converge/brief.md")):
         text = fixture.read_text(encoding="utf-8").lower()
         if "lane: `standard`" not in text:
@@ -217,6 +251,26 @@ def validate() -> None:
         for phrase in ["planned-mechanism drift checkpoint", "REPLAN", "SPLIT"]:
             if phrase.lower() not in flattened(text):
                 fail(f"{skill_name} skill is missing mechanism-drift route: {phrase}")
+
+    plan_skill = (PLUGIN / "skills/plan/SKILL.md").read_text(encoding="utf-8")
+    for phrase in [
+        "do not finalize the Planned mechanism baseline yet",
+        "After Map, apply the conditional structural-alternatives rule",
+        "cosmetic variants do not count",
+        "one coherent organizing model",
+    ]:
+        if phrase.lower() not in flattened(plan_skill):
+            fail(f"plan skill is missing planning sequence contract: {phrase}")
+
+    build_skill = (PLUGIN / "skills/build/SKILL.md").read_text(encoding="utf-8")
+    for phrase in [
+        "record the current proof unit prospectively",
+        "only then begin the next unit",
+        "Proof units are not commits, stacks, releases",
+        "does not prove the completed candidate",
+    ]:
+        if phrase.lower() not in flattened(build_skill):
+            fail(f"build skill is missing proof-unit contract: {phrase}")
 
     verify_skill = (PLUGIN / "skills/verify/SKILL.md").read_text(encoding="utf-8")
     for phrase in [
@@ -234,6 +288,8 @@ def validate() -> None:
         "Critical reviewer audit",
         "Candidate identity match",
         "Full-candidate cross-lens sweep",
+        "Delegated review ownership (conditional)",
+        "Synthesis-owner inspection and discrepancies",
     ]:
         if phrase.lower() not in flattened(findings_template):
             fail(f"findings template is missing reviewer audit field: {phrase}")
@@ -282,6 +338,10 @@ def validate() -> None:
     for phrase in [
         "content-only export of the pre-change source tree",
         "static checks are `PROXY` evidence for agent behavior",
+        "Matched policy behavior probes",
+        "Freeze and hash the request",
+        "Capture chronology, not only the final answer or artifact",
+        "one pair supports only the observed difference",
     ]:
         if phrase.lower() not in flattened(eval_readme):
             fail(f"evaluation guidance is missing proof boundary: {phrase}")

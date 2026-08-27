@@ -41,20 +41,43 @@ When Verify finds a candidate defect inside the sealed contract, it returns the
 candidate to Build without spending review budget. Missing external evidence or
 another unresolved prerequisite is `BLOCKED`, not a candidate defect.
 
+## Delegated stage ownership
+
+Delegation is optional. When Challenge, Build, or Review delegates work, the
+invoking stage owner still owns the stage result:
+
+1. Dispatch a bounded scope, relevant seams, success criteria, and the
+   candidate identity that actually exists at that stage.
+2. Use the exact planning head or fingerprint for Challenge; the base,
+   dispatch-time fingerprint, and owned paths for Build; and the exact captured
+   candidate for Review.
+3. Inspect the cited source, diff, commands, and evidence directly. Record
+   unsupported claims, stale observations, identity mismatches, and other
+   discrepancies instead of forwarding the delegate's conclusion.
+4. Reconcile accepted evidence with the brief, implementation crosswalk, and
+   current candidate. The stage owner writes the synthesis and disposition.
+
+Record this in the stage's existing artifact. Challenge and Build use the
+brief; Review uses findings. Reuse the Critical reviewer audit when it already
+captures the same facts. A missing, failed, or uninspectable delegate result is
+a stated limitation or blocker, not accepted evidence. Do not create a new
+artifact merely because work was delegated.
+
 ## Sealing
 
 The contract seals when Plan ends `PLANNED`. The sealed sections of
 `brief.md` are the lane rationale and any Standard exception, Outcome,
 Non-goals, Dangerous false successes, Baseline guarantees, Proposed change,
 Planned mechanism baseline, Invariants, Acceptance criteria, any triggered
-lifecycle/ownership matrix and Critical proof obligations, the Challenge
-contract amendments, and the Split decision.
+lifecycle/ownership matrix and Critical proof obligations, the plan-time causal
+grounding trace, the Challenge contract amendments, and the Split decision.
 
-Build, Verify, Remediate, and reviewers append to the Map, Implementation
-Crosswalk, Verification Evidence, findings, and closure sections; they do not
-edit sealed sections. The Map may gain newly observed facts, but those facts do
-not make an unplanned mechanism retroactively approved. Any change to a sealed
-section is a contract amendment: it must be labeled as such, routed back
+Build, Verify, Remediate, and reviewers append newly observed facts to the Map,
+plus the Implementation Crosswalk, Verification Evidence, findings, and closure
+sections; they do not rewrite the sealed plan-time trace or other sealed
+sections. New Map facts do not make an unplanned mechanism retroactively
+approved. Any change to a sealed section is a contract amendment: it must be
+labeled as such, routed back
 through Plan's Challenge step, and it starts a new contract with a new review
 cycle rather than silently reusing the current budget.
 
@@ -71,7 +94,7 @@ Use these local artifacts:
 .converge/
 ├── brief.md
 ├── state.yaml
-├── findings.md   # only when Review finds issues
+├── findings.md   # every broad Review, including a clean Review
 └── closure.md    # only when Close is needed
 ```
 

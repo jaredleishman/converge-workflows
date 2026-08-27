@@ -71,38 +71,52 @@ manufacture interview rounds after the direction is already clear.
    context beyond the Phase 1 skim.
 2. Map entry points, sources of truth, consumers, state mutations, external
    effects, async/retry paths, concurrency boundaries, and rollout boundaries.
+   For Standard and Critical work, apply the causal-grounding completion rule
+   in `scope-policy.md` to every materially distinct path. Do not stop at a
+   category or file inventory. Reuse an applicable Critical lifecycle matrix
+   instead of duplicating its traces.
 3. Confirm the lane proposed in the Direction Summary against the actual
    impact and failure model. Apply the compound-boundary screen in `lanes.md`
    and record a short lane rationale. When Standard relies on an exception,
    enumerate its boundaries, containment, recovery, ownership, and falsifying
    evidence. Tell the user if mapping changed the proposed lane.
-4. Write the smallest coherent proposed change and a Planned mechanism
-   baseline that names its ownership, ordering, identity, and failure-model
-   decisions. Include the shared baseline guarantees as non-waivable regression
-   boundaries. Fast uses at most two important invariants and three acceptance
-   criteria; Standard uses at most four important invariants and six acceptance
-   criteria.
+4. Draft the smallest coherent proposed change and enough of the candidate
+   mechanism to Challenge it, but do not finalize the Planned mechanism
+   baseline yet. Include the shared baseline guarantees as non-waivable
+   regression boundaries. Fast uses at most two important invariants and three
+   acceptance criteria; Standard uses at most four important invariants and six
+   acceptance criteria.
 5. When `scope-policy.md` triggers the Critical lifecycle/ownership matrix,
    model the applicable event and failure paths in the existing brief. Add
    Critical proof obligations that distinguish direct or boundary-faithful
    evidence from proxies. Omit both sections when their trigger does not apply;
    do not burden a simple Standard brief with Critical ceremony.
-6. Perform code-aware Challenge focused only on missing surfaces, defeating
-   failure sequences, unsupported assumptions, proof fidelity, and split
-   candidates. Standard uses one pass. Critical uses two independent passes
-   with hidden findings and different contexts or lenses; synthesize only after
-   both finish. If the host cannot provide the second independent context,
-   record the limitation and obtain an explicit user decision before calling
-   Challenge complete.
-7. Amend the contract with supported Challenge findings, then decide whether
-   the work has one proof story or should be split. If mapping or Challenge
-   contradicts the approved direction, return to Phase 1 with what you found
-   instead of silently changing the direction.
-8. Create or update `.converge/brief.md` and `.converge/state.yaml` from the
+6. After Map, apply the conditional structural-alternatives rule in
+   `scope-policy.md`. When triggered, Challenge at least two mechanisms before
+   finalizing the baseline. They must differ in a load-bearing ownership,
+   ordering/commit, identity, or lifecycle decision; cosmetic variants do not
+   count. When it is not triggered, record the reason briefly and continue
+   without manufacturing alternatives.
+7. Perform code-aware Challenge focused only on missing surfaces, defeating
+   failure sequences, unsupported assumptions, proof fidelity, applicable
+   structural alternatives, and split candidates. Standard uses one pass.
+   Critical uses two independent passes with hidden findings and different
+   contexts or lenses; synthesize only after both finish. If the host cannot
+   provide the second independent context, record the limitation and obtain an
+   explicit user decision before calling Challenge complete. Apply the delegated
+   stage-ownership rule in `workflow.md` whenever a pass is delegated.
+8. Select or synthesize the mechanism after Challenge. Finalize a Planned
+   mechanism baseline that names one coherent organizing model plus the
+   ownership, ordering, identity, and failure-model decisions. Amend the
+   contract with supported Challenge findings, then decide whether the work has
+   one proof story or should be split. If mapping or Challenge contradicts the
+   approved direction, return to Phase 1 with what you found instead of silently
+   changing the direction.
+9. Create or update `.converge/brief.md` and `.converge/state.yaml` from the
    templates. Leave the review-budget fields exactly as templated; only the
    state gate changes them. Add `.converge/` to `.git/info/exclude` when
    appropriate; do not silently change committed ignore files.
-9. End with `PLANNED`, `SPLIT`, or `BLOCKED`, recorded via
+10. End with `PLANNED`, `SPLIT`, or `BLOCKED`, recorded via
    `python3 "<plugin-root>/scripts/state_gate.py" set-status <STATUS> --stage plan`.
    `BLOCKED` also requires `--reason`. A terminal `REPLAN` or `SPLIT` starts a
    new contract from a newly created state file; do not reset the current file.
