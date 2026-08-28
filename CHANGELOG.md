@@ -6,6 +6,8 @@ All notable changes to Converge are documented here.
 
 ### Added
 
+- Cursor host packaging: `.cursor-plugin/marketplace.json` and
+  `plugins/converge/.cursor-plugin/plugin.json`.
 - `state_gate.py init` archives a `CLOSED`, `REPLAN`, or `SPLIT` contract under
   `.converge/archive/` and writes a fresh `PLANNING` pair. Plan calls it
   instead of overwriting `state.yaml` by hand.

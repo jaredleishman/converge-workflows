@@ -40,6 +40,7 @@ that a workflow decision instead of automatically starting another review loop.
 
 The repository packages the same `skills/` tree for:
 
+- Cursor
 - OpenAI Codex
 - xAI Grok Build
 - Anthropic Claude Code
@@ -54,6 +55,21 @@ record which host install/load smoke tests were actually run; manifest success
 alone is not a cross-host runtime claim.
 
 ## Install
+
+### Cursor
+
+For local use from a clone:
+
+```bash
+mkdir -p ~/.cursor/plugins/local
+ln -sfn "$(pwd)/plugins/converge" ~/.cursor/plugins/local/converge
+```
+
+Then reload Cursor (**Developer: Reload Window**) and confirm the Converge skills in **Customize**. Invoke them as `/plan`, `/build`, `/verify`, `/review`, `/remediate`, `/close`, and `/status`.
+
+On a Teams or Enterprise plan, import this repository as a team marketplace from **Dashboard → Plugins → Add Marketplace → Import from Repo**.
+
+To list it on the public Cursor Marketplace, submit the repository at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish).
 
 ### Claude Code
 
@@ -116,6 +132,7 @@ python3 -m unittest discover -s tests -v
 Test the plugin without publishing:
 
 ```bash
+ln -sfn "$(pwd)/plugins/converge" ~/.cursor/plugins/local/converge
 claude --plugin-dir ./plugins/converge
 grok --plugin-dir ./plugins/converge
 codex plugin marketplace add .
@@ -178,6 +195,7 @@ separate worktrees for parallel or stacked changes.
 ```text
 .agents/plugins/marketplace.json       # Codex marketplace
 .claude-plugin/marketplace.json        # Claude Code marketplace
+.cursor-plugin/marketplace.json        # Cursor marketplace
 .grok-plugin/marketplace.json          # Grok Build marketplace
 .kimi-plugin/marketplace.json          # Kimi Code marketplace
 plugins/converge/                      # installable plugin

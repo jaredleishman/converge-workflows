@@ -68,19 +68,23 @@ def validate() -> None:
     if version_lines != [version]:
         fail("README.md Current version does not match VERSION")
 
-    required_json = [
+    marketplace_json = [
         ROOT / ".agents/plugins/marketplace.json",
         ROOT / ".claude-plugin/marketplace.json",
+        ROOT / ".cursor-plugin/marketplace.json",
         ROOT / ".grok-plugin/marketplace.json",
         ROOT / ".kimi-plugin/marketplace.json",
+    ]
+    plugin_json = [
         PLUGIN / ".claude-plugin/plugin.json",
         PLUGIN / ".codex-plugin/plugin.json",
+        PLUGIN / ".cursor-plugin/plugin.json",
         PLUGIN / ".grok-plugin/plugin.json",
         PLUGIN / ".kimi-plugin/plugin.json",
     ]
-    documents = {path: load_json(path) for path in required_json}
+    documents = {path: load_json(path) for path in marketplace_json + plugin_json}
 
-    for path in required_json[4:]:
+    for path in plugin_json:
         data = documents[path]
         if data.get("name") != "converge":
             fail(f"{path.relative_to(ROOT)} must name the plugin converge")
@@ -90,7 +94,13 @@ def validate() -> None:
     claude_market = documents[ROOT / ".claude-plugin/marketplace.json"]
     grok_market = documents[ROOT / ".grok-plugin/marketplace.json"]
     codex_market = documents[ROOT / ".agents/plugins/marketplace.json"]
-    for name, data in [("Claude", claude_market), ("Grok", grok_market), ("Codex", codex_market)]:
+    cursor_market = documents[ROOT / ".cursor-plugin/marketplace.json"]
+    for name, data in [
+        ("Claude", claude_market),
+        ("Grok", grok_market),
+        ("Codex", codex_market),
+        ("Cursor", cursor_market),
+    ]:
         entries = [p for p in data.get("plugins", []) if p.get("name") == "converge"]
         if len(entries) != 1:
             fail(f"{name} marketplace must contain exactly one converge entry")
@@ -101,6 +111,10 @@ def validate() -> None:
         fail("Grok marketplace local source is incorrect")
     if codex_market["plugins"][0].get("source") != {"source": "local", "path": "./plugins/converge"}:
         fail("Codex marketplace local source is incorrect")
+    if (cursor_market.get("metadata") or {}).get("pluginRoot") != "plugins":
+        fail("Cursor marketplace pluginRoot must be plugins")
+    if cursor_market["plugins"][0].get("source") != "converge":
+        fail("Cursor marketplace source must point to converge under pluginRoot")
 
     kimi_market = documents[ROOT / ".kimi-plugin/marketplace.json"]
     kimi_entries = [p for p in kimi_market.get("plugins", []) if p.get("id") == "converge"]

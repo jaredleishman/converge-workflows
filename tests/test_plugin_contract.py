@@ -35,6 +35,7 @@ class PluginContractTests(unittest.TestCase):
         paths = [
             ROOT / ".agents/plugins/marketplace.json",
             ROOT / ".claude-plugin/marketplace.json",
+            ROOT / ".cursor-plugin/marketplace.json",
             ROOT / ".grok-plugin/marketplace.json",
         ]
         for path in paths:
@@ -51,6 +52,7 @@ class PluginContractTests(unittest.TestCase):
         manifests = [
             PLUGIN / ".claude-plugin/plugin.json",
             PLUGIN / ".codex-plugin/plugin.json",
+            PLUGIN / ".cursor-plugin/plugin.json",
             PLUGIN / ".grok-plugin/plugin.json",
             PLUGIN / ".kimi-plugin/plugin.json",
         ]

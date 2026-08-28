@@ -13,9 +13,11 @@ SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]
 JSON_PATHS = [
     ROOT / "plugins/converge/.claude-plugin/plugin.json",
     ROOT / "plugins/converge/.codex-plugin/plugin.json",
+    ROOT / "plugins/converge/.cursor-plugin/plugin.json",
     ROOT / "plugins/converge/.grok-plugin/plugin.json",
     ROOT / "plugins/converge/.kimi-plugin/plugin.json",
     ROOT / ".claude-plugin/marketplace.json",
+    ROOT / ".cursor-plugin/marketplace.json",
     ROOT / ".grok-plugin/marketplace.json",
 ]
 
