@@ -28,11 +28,14 @@ All notable changes to Converge are documented here.
 - A compound-boundary Critical screen with a falsifiable Standard exception,
   plus a conditional lifecycle/ownership matrix and Critical proof obligations
   in `templates/brief-critical.md`.
-- A provenance-aware PR #1847 replay and retrospective that separates planning
-  coverage, proof fidelity, finite-loop compliance, accuracy, and cost.
+- A provenance-aware Critical-lane replay and retrospective that separates
+  planning coverage, proof fidelity, finite-loop compliance, accuracy, and cost.
+  The scenario uses a fictional reservation service, not a real product
+  repository.
 
 ### Changed
 
+- The Critical replay scenario no longer names a real product repository.
 - Fast skips Challenge in the Plan skill. Standard remains one pass. Critical
   remains two.
 - Plan does not implement. Continued execution hands off to Build.

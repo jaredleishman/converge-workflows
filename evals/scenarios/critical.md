@@ -2,10 +2,10 @@
 
 ## Purpose and claim boundary
 
-Use [PR #1847](https://github.com/pebbleferry/slip-hold/pull/5360)
+Use [PR #1847](https://github.com/pebbleferry/slip-hold/pull/1847)
 to evaluate whether Converge improves planning coverage, proof fidelity, and
-finite-loop decisions for a lifecycle-heavy change. Do not copy its reservation rules
-into generic workflow policy.
+finite-loop decisions for a lifecycle-heavy change. Do not copy its reservation
+rules into generic workflow policy.
 
 The historical record is a retrospective, not causal proof. It can show which
 failure families a plan or review covers and where protocol-compliant artifacts
@@ -73,9 +73,9 @@ Do not expose this section to the replay agent.
 - Pre-change base: `2cfee7b7435e1bd04a322b06a79ed529ef09b0e5`
 - Opening implementation: `123f9da9024825520d075fcf20f1893fef6b6bb2`
 - Normalized opening intent used only for retrospective adjudication: persist
-  valid carrier slot offers once as short-lived, reusable unscheduled holds; reuse
-  eligible rows before another carrier call; mark a hold scheduled only when
-  selected.
+  valid carrier slot offers once as short-lived, reusable unscheduled holds;
+  reuse eligible holds before another carrier call; mark a hold scheduled only
+  when a sailing is assigned.
 
 The prior review transcript recorded nine review iterations on evolving
 candidates. Eight led to another revision; the ninth was GREEN.
