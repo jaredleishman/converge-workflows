@@ -35,6 +35,8 @@ All notable changes to Converge are documented here.
 
 ### Changed
 
+- Cursor marketplace `source` now uses `./plugins/converge`, matching Cursor's
+  plugin template, so GitHub marketplace import can find the plugin.
 - The Critical replay scenario no longer names a real product repository.
 - Fast skips Challenge in the Plan skill. Standard remains one pass. Critical
   remains two.

@@ -111,10 +111,8 @@ def validate() -> None:
         fail("Grok marketplace local source is incorrect")
     if codex_market["plugins"][0].get("source") != {"source": "local", "path": "./plugins/converge"}:
         fail("Codex marketplace local source is incorrect")
-    if (cursor_market.get("metadata") or {}).get("pluginRoot") != "plugins":
-        fail("Cursor marketplace pluginRoot must be plugins")
-    if cursor_market["plugins"][0].get("source") != "converge":
-        fail("Cursor marketplace source must point to converge under pluginRoot")
+    if cursor_market["plugins"][0].get("source") != "./plugins/converge":
+        fail("Cursor marketplace source must point to ./plugins/converge")
 
     kimi_market = documents[ROOT / ".kimi-plugin/marketplace.json"]
     kimi_entries = [p for p in kimi_market.get("plugins", []) if p.get("id") == "converge"]

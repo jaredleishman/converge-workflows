@@ -58,6 +58,17 @@ alone is not a cross-host runtime claim.
 
 ### Cursor
 
+Import this GitHub repository as a marketplace, then install the plugin:
+
+1. Open **Customize → Plugins**.
+2. Choose **Import marketplace** (or **Add marketplace**).
+3. Paste `https://github.com/jaredleishman/converge-workflows`.
+4. Install **converge**.
+
+Reload the window if the skills do not appear. Invoke them as `/plan`, `/build`, `/verify`, `/review`, `/remediate`, `/close`, and `/status`.
+
+On a Teams or Enterprise plan, the same URL works from **Dashboard → Plugins → Add Marketplace → Import from Repo**.
+
 For local use from a clone:
 
 ```bash
@@ -65,9 +76,7 @@ mkdir -p ~/.cursor/plugins/local
 ln -sfn "$(pwd)/plugins/converge" ~/.cursor/plugins/local/converge
 ```
 
-Then reload Cursor (**Developer: Reload Window**) and confirm the Converge skills in **Customize**. Invoke them as `/plan`, `/build`, `/verify`, `/review`, `/remediate`, `/close`, and `/status`.
-
-On a Teams or Enterprise plan, import this repository as a team marketplace from **Dashboard → Plugins → Add Marketplace → Import from Repo**.
+Then reload Cursor (**Developer: Reload Window**).
 
 To list it on the public Cursor Marketplace, submit the repository at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish).
 
