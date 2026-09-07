@@ -129,6 +129,31 @@ or install the plugin directory directly:
 Then run `/reload` or start a new session. Manage the plugin through
 `/plugins`.
 
+### Muse Code
+
+Muse Code has no plugin marketplace; it loads skills directly. All seven
+converge skills pass `muse skills validate` unmodified. From a local clone:
+
+```bash
+for s in plan build verify review remediate close status; do
+  muse skills install ./plugins/converge/skills/$s --scope user
+done
+```
+
+The skills reference `../_shared/` siblings and invoke
+`scripts/state_gate.py` by relative path, so confirm the installed layout
+keeps each skill directory next to `_shared/` with `scripts/` two levels up:
+
+```bash
+muse skills inspect plan
+```
+
+If an install isolates skill directories, preserve the tree instead (copy or
+symlink the `skills/` content so the relative layout stays intact). If
+`converge` is already installed in Claude Code or Codex,
+`muse skills import --from claude` or `muse skills import --from codex`
+picks those skills up.
+
 ## Local development
 
 Clone the repository, then validate it:
