@@ -26,6 +26,10 @@ follow-ups and spend no review effort. "The Future change has no home" is a
 load-bearing miss: it goes to the remediate family or `REPLAN`, never to a
 style note.
 
+Examples: a blocker names `Cites: INV-2` with a reachable sequence and the
+violated row. A style or naming note citing no row is a follow-up, never a
+blocker.
+
 ### Blocker standard
 
 A P0/P1 blocker needs all of: a concrete reachable execution sequence;

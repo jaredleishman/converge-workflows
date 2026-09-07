@@ -20,6 +20,11 @@ evidence. Proxy evidence may support `PARTIAL`; proxy-only evidence is
 required obligation is `BLOCKED`. Live traffic and wall-clock sleep are not
 required when a controlled test faithfully crosses the same boundary.
 
+Examples: `BOUNDARY_FAITHFUL` is a retry test with a fake clock and fake
+endpoint that keeps the production ownership and commit path. `PROXY` is
+calling the helper directly or asserting a mock was called without crossing
+the entry point.
+
 For every material test record the production event or boundary exercised, the
 broken mechanism or injected failure it would detect, and each proxy or mock
 that limits the claim.
@@ -43,6 +48,11 @@ failure model), the contract cannot continue serially: `REPLAN` for the same
 outcome or `SPLIT` for independently provable outcomes. Do not open a second
 worktree or second implementation to resolve drift. When the checkpoint
 passes, record a concrete "none found" with the seams inspected.
+
+Examples: drift is Build adding a retry queue that moves failure handling to
+a new worker, changing the failure-model axis → `REPLAN`. No drift is
+extracting a helper with identical ownership, ordering, identity, and failure
+behavior → record "none found".
 
 ## Deletion pass (Build only)
 
