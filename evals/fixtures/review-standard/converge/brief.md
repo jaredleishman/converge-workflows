@@ -68,6 +68,14 @@ admin console, and order totals are computed from line items.
 
 Add the three discount entry points and the checkout total computation.
 
+
+## Planned mechanism baseline
+
+- Organizing model: one clamp helper shared by every discount entry point; totals computed from line items
+- Ownership: each entry point owns the order dictionary it mutates for the duration of the call
+- Ordering / commit: clamp the rate before any mutation of `order["total"]`
+- Identity: orders are identified by the caller-supplied dictionary; no deduplication
+- Failure model: an invalid rate or line item raises before mutation; no partial writes
 ## Invariants
 
 - `INV-1`: The discount rate is clamped to `MAX_DISCOUNT_RATE` at every entry
@@ -80,6 +88,10 @@ Add the three discount entry points and the checkout total computation.
   point runs, then the applied rate equals `MAX_DISCOUNT_RATE`.
 - `AC-2` — Given any line items, when checkout totals an order, then the
   result is never negative.
+
+## Future change
+
+Adding a per-tenant maximum rate later should touch only the clamp helper.
 
 ## Challenge results
 

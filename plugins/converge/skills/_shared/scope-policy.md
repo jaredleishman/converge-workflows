@@ -1,48 +1,46 @@
 # Scope and split policy
 
-## Review surface
+Plan reads this. Candidate-time rules (proof fidelity, drift, deletion) live in
+`candidate-checks.md`.
 
-Before implementation, map only the surfaces that can shape the requested
-behavior:
+## Map surface
 
-- Entry points that create or mutate it
-- Sources of truth and provenance
-- Consumers and payload builders
-- Database, cache, queue, and external effects
-- Async dispatch, recovery, retry, and idempotency paths
-- Concurrency and stale-state boundaries
-- Migration, rollout, feature-fence, and mixed-version boundaries
-
-Broaden only when repository evidence connects a path to the behavior.
+Map only the surfaces that can shape the requested behavior: entry points,
+sources of truth, consumers and payload builders, database/cache/queue/external
+effects, async dispatch and retry/idempotency, concurrency and stale-state
+boundaries, migration/rollout/mixed-version boundaries. Broaden only when
+repository evidence connects a path to the behavior. One line per path.
 
 ## Causal grounding completion
 
 For Standard and Critical work, Map is complete only when every materially
-distinct path revealed by the review surface is connected in execution order:
+distinct path is connected in execution order: trigger → decision and owner →
+mutation, durable write, or external effect (including no-mutation) → failure,
+recovery, or cancellation → durable result → next attempt or consumer.
 
-- Trigger or entry point
-- Decision and control or resource owner
-- Mutation, durable write, or external effect, including no-mutation outcomes
-- Failure, recovery, cleanup, or cancellation behavior
-- Durable result
-- Next attempt or downstream consumer
+A category or file inventory plus one happy path is not enough. Merge paths
+once their behavior is identical; do not repeat a shared tail. Close an
+irrelevant path with a concrete not-applicable reason. When the Critical
+lifecycle matrix applies, its rows satisfy this rule; do not restate them.
 
-A category or file inventory and one representative happy path are not enough.
-Merge paths after their behavior becomes identical; do not repeat a shared
-tail. Close an irrelevant path with a concrete not-applicable reason. When the
-Critical lifecycle and ownership matrix below applies, its event rows satisfy
-this trace requirement; do not restate the same path in a second format.
+## Mechanism baseline
 
-Before Plan seals, name one repository-appropriate organizing model that makes
-the important ownership, ordering, identity, state, and failure decisions
-coherent. This is a description of the selected mechanism, not a requirement
-to introduce a framework or abstraction.
+Before Plan seals, the brief names one repository-appropriate organizing model
+and fills the four mechanism axes:
+
+- Ownership: who owns each durable identity and resource, and when it is released
+- Ordering / commit: what commits before what, and where the commit point is
+- Identity: namespace, collision, and deduplication rules
+- Failure model: what happens on error, retry, cancellation, and partial completion
+
+These describe the selected mechanism; they do not require a new framework or
+abstraction. Standard and Critical cannot seal `PLANNED` with a blank axis.
+Build may not change an axis; if it must, that is `REPLAN`.
 
 ## Conditional structural alternatives
 
-After Map and before the Planned mechanism baseline is final, compare at least
-two structurally different mechanisms when Map exposes material novelty or
-high-risk ambiguity in any of these areas:
+After Map and before the baseline is final, compare at least two mechanisms
+when Map exposes material novelty or high-risk ambiguity in:
 
 - Concurrency or logical/physical resource ownership
 - Lifecycle, persistent state, identity, or partitioning
@@ -50,72 +48,45 @@ high-risk ambiguity in any of these areas:
 - A boundary or side effect with credible owners whose commit or lifecycle
   consequences differ
 
+Also run it when the user or the Direction Summary asks to "search the cut".
 Fast work never requires this branch. Do not trigger it for a routine use of an
-established repository pattern, naming or helper-layout choices, or alternatives
-that preserve every load-bearing decision. When triggered, the candidates must
-differ in at least one load-bearing ownership, ordering/commit, identity, or
-lifecycle decision. Compare caller-visible behavior, organizing model,
-ownership and ordering, identity and failure behavior, complexity and proof
-burden, and the dangerous false successes each design prevents. Record why one
-candidate was selected or how the final mechanism synthesizes them.
+established repository pattern, naming or helper layout, or alternatives that
+preserve every load-bearing decision.
+
+Two mechanisms count as different only when they disagree on at least one axis:
+a load-bearing ownership, ordering/commit, identity, or lifecycle decision.
+"Not like this" and a named engineer's style are not alternatives. Default
+second mechanism: the same model with one flipped axis or another card from
+`doctrine-cards.md`. A different model family is optional, never required.
+Compare caller-visible behavior, organizing model, the four axes, complexity
+and proof burden, and the dangerous false successes each prevents. Name the
+rejected option; if none is named, Challenge did not run.
 
 ## Conditional lifecycle and ownership matrix
 
-Use the matrix in the existing Change Brief when a Critical change's
-correctness depends on combinatorial timing, async handoff, retry/cancellation,
-persistent identity, transaction ordering, external effects, state promotion,
-or physical-resource ownership across contexts or attempts. Omit it for Fast,
-ordinary Standard, and Critical changes whose risk has no lifecycle-ownership
-dimension. A Standard exception to the compound-boundary screen uses the
-compact exception record in `lanes.md`, not this full matrix.
-
-Create one row per applicable event or failure path, including admission,
-start/setup failure, deadline, cancellation, late completion, persist/commit,
-retry or next attempt, asynchronous promotion, and cleanup/release. Mark an
-event not applicable only with a concrete reason. Record:
-
-- The control context and handoff
-- Current-request election or visibility effect
-- Persistence owner and timing
-- Physical or agent resource owner and release point
-- Durable state before and after
-- Identity namespace, collision rule, and deduplication behavior
-- Transaction or external-effect commit point
-- Retry, cleanup, and next-attempt behavior
-- The evidence that exercises the failure path
-
-The matrix is a plan-time ownership contract, not implementation choreography.
-
-Proof fidelity and planned-mechanism drift live in `candidate-checks.md`.
+Use the matrix in `brief-critical.md` when a Critical change's correctness
+depends on combinatorial timing, async handoff, retry/cancellation, persistent
+identity, transaction ordering, external effects, state promotion, or
+physical-resource ownership across contexts or attempts. Omit it for Fast,
+ordinary Standard, and Critical work with no lifecycle-ownership dimension.
+One row per applicable event or failure path; a not-applicable event needs a
+concrete reason. The matrix is a plan-time ownership contract, not
+implementation choreography.
 
 ## Split gate
 
-Recommend splitting when the candidate has more than one independent proof
-story. Warning signals include:
-
-- Multiple sources of truth change
-- Multiple external side-effect protocols change
-- Migration, backfill, activation, and cutover are combined
-- A new abstraction and many materially different consumers change together
-- More than four substantial invariants are required
-- More than six acceptance criteria are required
-- Separate portions can ship safely and independently
-- Challenge passes find unrelated root-cause families
-
-A large diff may still be coherent. A small diff may still combine incompatible
-state machines. Split by behavioral independence, not line count alone.
-
-## Scope creep
-
-A review finding blocks the current change only when it has a concrete reachable
-path, material impact, a causal relationship to the candidate, and a violation
-of the sealed brief, a non-waivable baseline guarantee, or a regression
-introduced by the change.
+Split when the candidate has more than one independent proof story. Signals:
+multiple sources of truth change; multiple external side-effect protocols
+change; migration, backfill, activation, and cutover are combined; a new
+abstraction and many different consumers change together; more than four
+substantial invariants or six acceptance criteria; portions can ship safely
+alone; Challenge passes find unrelated root-cause families. Split by behavioral
+independence, not line count.
 
 ## Non-waivable baseline guarantees
 
-The brief cannot waive candidate-caused regressions merely by omission. Review
-may block a concrete, material regression in:
+The brief cannot waive a candidate-caused regression by omission. Review may
+block a concrete, material regression in:
 
 - Authorization, tenant isolation, or permission boundaries
 - Confidentiality, privacy, secret handling, or data exposure
@@ -124,20 +95,8 @@ may block a concrete, material regression in:
   existing behavior
 
 A weakness that was already reachable and is not introduced, exposed, or
-materially worsened by the candidate remains a baseline issue. A product wish
-that is absent from both the sealed brief and this safety floor is a proposed
-contract amendment, not a current blocker.
-
-Use “baseline issue” only for that pre-existing, candidate-unworsened case. A
-candidate-caused violation of this safety floor remains eligible to block even
-when the brief omitted it.
-
-Do not silently turn these into blockers:
-
-- Unrelated baseline weaknesses
-- General refactoring opportunities
-- Defense in depth with no current reachable failure
-- Future capabilities behind an effective fail-closed fence
-- Product requirements absent from the sealed brief and baseline guarantees
-
-A reviewer may propose a contract amendment, but must label it as such.
+materially worsened by the candidate is a baseline issue, not a blocker. A
+product wish absent from both the sealed brief and this floor is a proposed
+contract amendment. Do not silently turn unrelated baseline weaknesses,
+refactoring opportunities, defense in depth with no reachable failure, or
+fenced future capabilities into blockers.

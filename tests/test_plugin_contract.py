@@ -296,6 +296,76 @@ class PluginContractTests(unittest.TestCase):
         self.assertIn("Keyword or substring matches are never efficacy evidence", readme)
         self.assertIn("static checks are `PROXY` evidence for agent behavior", readme)
 
+    def test_future_change_and_mechanism_axes_are_packaged(self) -> None:
+        brief = squash(
+            (PLUGIN / "skills/_shared/templates/brief.md").read_text(encoding="utf-8")
+        )
+        fast = squash(
+            (PLUGIN / "skills/_shared/templates/brief-fast.md").read_text(
+                encoding="utf-8"
+            )
+        )
+        scope = squash(
+            (PLUGIN / "skills/_shared/scope-policy.md").read_text(encoding="utf-8")
+        )
+        workflow = squash(
+            (PLUGIN / "skills/_shared/workflow.md").read_text(encoding="utf-8")
+        )
+        for field in ["Ownership:", "Ordering / commit:", "Identity:", "Failure model:"]:
+            with self.subTest(field=field):
+                self.assertIn(field, brief)
+        self.assertIn("## Future change", brief)
+        self.assertIn("## Future change", fast)
+        self.assertIn("Challenge skipped (Fast)", fast)
+        self.assertNotIn("Causal grounding trace", fast)
+        self.assertIn("cannot seal `PLANNED` with a blank axis", scope)
+        self.assertIn("Future change", workflow)
+        self.assertTrue(
+            (PLUGIN / "skills/_shared/doctrine-cards.md").is_file()
+        )
+
+    def test_build_reads_only_the_contract_and_deletes_once(self) -> None:
+        build = squash((PLUGIN / "skills/build/SKILL.md").read_text(encoding="utf-8"))
+        checks = squash(
+            (PLUGIN / "skills/_shared/candidate-checks.md").read_text(encoding="utf-8")
+        )
+        self.assertIn("Do not optimize against Challenge alternatives", build)
+        self.assertIn("Exactly one implementation in exactly one tree", build)
+        self.assertIn("Run the deletion pass", build)
+        self.assertIn("Deletion pass (Build only)", checks)
+        self.assertIn("One pass;", checks)
+        self.assertIn("Do not open a second worktree", checks)
+
+    def test_review_findings_cite_rows(self) -> None:
+        policy = squash(
+            (PLUGIN / "skills/_shared/review-policy.md").read_text(encoding="utf-8")
+        )
+        findings = (PLUGIN / "skills/_shared/templates/findings.md").read_text(
+            encoding="utf-8"
+        )
+        closure = (PLUGIN / "skills/_shared/templates/closure.md").read_text(
+            encoding="utf-8"
+        )
+        review = squash((PLUGIN / "skills/review/SKILL.md").read_text(encoding="utf-8"))
+        self.assertIn("A finding that cites nothing is not a blocker", policy)
+        self.assertIn("- Cites:", findings)
+        self.assertIn("- Cites:", closure)
+        self.assertIn("Every finding cites a row", review)
+
+    def test_drift_inventory_lives_only_in_candidate_checks(self) -> None:
+        marker = "Thread, task, queue, callback, or signal"
+        checks = (PLUGIN / "skills/_shared/candidate-checks.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(marker, checks)
+        for skill_name in ["build", "verify", "remediate"]:
+            with self.subTest(skill=skill_name):
+                text = (PLUGIN / f"skills/{skill_name}/SKILL.md").read_text(
+                    encoding="utf-8"
+                )
+                self.assertNotIn(marker, text)
+                self.assertIn("candidate-checks.md", text)
+
     def test_repository_validator_passes(self) -> None:
         module = load_module(ROOT / "scripts/validate.py", "converge_validate")
         module.validate()

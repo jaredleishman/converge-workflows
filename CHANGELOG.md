@@ -6,6 +6,56 @@ All notable changes to Converge are documented here.
 
 ### Added
 
+- `## Future change` in every brief: one likely later edit the cut must keep
+  to one obvious seam. "Done" is the contract passing plus the Future change
+  having a home; no numeric score. `clean`, `elegant`, `maintainable`,
+  `extensible`, and `idiomatic` are banned from invariants and acceptance
+  criteria.
+- Four named mechanism axes (Ownership, Ordering / commit, Identity, Failure
+  model) under the existing `Planned mechanism baseline`. Standard and
+  Critical cannot seal with a blank axis; Build may not change one.
+- `templates/brief-fast.md`: a short Fast-only brief so Fast Plan no longer
+  reads the Standard template or the Critical addendum.
+- `doctrine-cards.md`: three cards (`minimal`, `supervision`, `evidence`)
+  that generate a second Challenge candidate. Read only when the alternatives
+  branch runs. Opt-in "search the cut" on ordinary Standard work.
+- Build reading rule (implement from the contract, not from Challenge
+  alternatives), a one-tree rule, and a single bounded deletion pass recorded
+  in the crosswalk.
+- `Cites:` on every finding. A finding that cites no AC, INV, BG, Future
+  change, or axis is not a blocker. `same-family-review` is recorded when no
+  second model family exists; it never blocks Review.
+- Fast promotion: a load-bearing miss in Fast promotes to Standard via
+  `REPLAN` instead of repeated repair.
+- Validator size budgets on the policy each skill loads, and a Fast template
+  line cap, so the token diet cannot silently regress.
+
+### Changed
+
+- Token diet: each skill's per-invocation policy load fell by 30 to 55
+  percent (Fast Plan by more than half); the whole tree shrank about 15
+  percent even after the additions above. The drift inventory now lives only in
+  `candidate-checks.md`; delegated ownership only in `workflow.md`; gate
+  commands and candidate identity only in `artifact-protocol.md`. Skills
+  reference those instead of restating them.
+- `workflow.md` gained a short "What done means" section; the state list and
+  budget exposition moved out of `artifact-protocol.md` into the gate's own
+  `show` output.
+- Standard briefs carry a target of about 150 lines before Build; exceeding it
+  is a Critical or split signal, not a reason to write more.
+- Verify and Close read the sealed contract and crosswalk rather than
+  re-deriving the Map; Close no longer reads `workflow.md`.
+- Fixture briefs and the `plan-standard` grader carry the four axes and a
+  Future change.
+
+### Deferred
+
+- A `probe` skill (parallel prototype worktrees during `PLANNING`), a roles
+  sheet, and a reflect step. None has a measured failure behind it yet;
+  Challenge-on-paper with a doctrine card is the default second mechanism.
+
+### Added (earlier, unreleased)
+
 - Cursor host packaging: `.cursor-plugin/marketplace.json` and
   `plugins/converge/.cursor-plugin/plugin.json`.
 - `state_gate.py init` archives a `CLOSED`, `REPLAN`, or `SPLIT` contract under

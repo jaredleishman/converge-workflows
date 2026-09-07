@@ -1,29 +1,33 @@
 # Change Brief
 
+Standard and Critical. Fast uses `brief-fast.md`, which records
+`Challenge skipped (Fast)`. Copy Critical sections from `brief-critical.md`
+only when the lane or a Standard exception needs them. Keep this under about
+150 lines before Build: one line per Map path, one sentence per table cell.
+
 ## Metadata
 
-- Lane: `fast | standard | critical`
+- Lane: `standard | critical`
 - Lane rationale:
 - Compound-boundary screen: `not-triggered | critical | standard-exception`
 - Last updated:
 
 ## Outcome
 
-Describe the observable behavior that should change.
+Observable behavior that changes, and for whom.
 
 ## Non-goals
 
-List nearby behavior that is intentionally unchanged.
+Nearby behavior that must not change.
 
 ## Dangerous false successes
 
-List outcomes that could look successful while the real system is wrong.
+Outcomes that look successful while the system is wrong.
 
 ## Baseline guarantees
 
-These are non-waivable regression boundaries even when an acceptance criterion
-omits them. Keep applicable evidence in the crosswalk; `Not applicable` requires
-a concrete scope reason.
+Non-waivable regression boundaries even when no AC names them. `Not
+applicable` needs a concrete scope reason.
 
 - `BG-1` — Authorization and tenant-isolation boundaries are not weakened.
 - `BG-2` — Confidentiality, privacy, and secret handling are not weakened.
@@ -32,67 +36,66 @@ a concrete scope reason.
 
 ## Map
 
-### Entry points
+One line per path. `Not applicable` with a reason for untouched boundaries.
 
-### Sources of truth and provenance
-
-### Consumers
-
-### State mutations
-
-### External effects
-
-### Async, retry, and recovery paths
-
-### Concurrency and stale-state boundaries
-
-### Migration, rollout, and mixed-version boundaries
+- Entry points:
+- Sources of truth and provenance:
+- Consumers:
+- State mutations:
+- External effects:
+- Async, retry, and recovery paths:
+- Concurrency and stale-state boundaries:
+- Migration, rollout, and mixed-version boundaries:
 
 ### Causal grounding trace (Standard and Critical)
 
-Omit for Fast. Trace every materially distinct mapped path in execution order,
-or give a concrete not-applicable reason. Merge identical tails. When a Critical
-lifecycle matrix applies, reference its rows instead of duplicating them here.
+One row per materially distinct path: trigger → owner → mutation or effect →
+failure or recovery → durable result → next consumer. Merge identical tails.
+When a Critical lifecycle matrix applies, reference its rows instead.
 
-| Material path | Trigger through ownership, mutation/effect, failure/recovery, durable result, and next consumer or attempt | Not-applicable reason |
+| Material path | Trace | Not-applicable reason |
 |---|---|---|
 
 ## Proposed change
 
-Describe the smallest coherent mechanism. Avoid implementation choreography.
+The smallest coherent mechanism. No implementation choreography.
 
 ## Planned mechanism baseline
 
-Record the approved mechanism, ownership, ordering, identity, and failure-model
-decisions before Build. Later Map observations may add facts but cannot make a
-different mechanism retroactively planned.
+Sealed at `PLANNED`. Build may not change these; if it must, `REPLAN`.
 
 - Organizing model:
+- Ownership:
+- Ordering / commit:
+- Identity:
+- Failure model:
 
 ## Invariants
 
-Fast: at most two. Standard: at most four.
+At most four.
 
 - `INV-1`:
 
 ## Acceptance criteria
 
-Fast: at most three. Standard: at most six. Given / When / Then.
+At most six. Given / When / Then. No "clean", "elegant", "maintainable",
+"extensible", or "idiomatic".
 
 - `AC-1` — Given / When / Then. Proposed regression:
 
-## Challenge results
+## Future change
 
-Omit this whole section on Fast when Challenge was skipped. Record
-`Challenge skipped (Fast)` instead.
+One sentence naming the most likely later edit this cut must survive with one
+obvious seam, for example "Adding a dry-run flag should touch only the writer."
+
+## Challenge results
 
 ### Alternative mechanisms (conditional)
 
-Include only when `scope-policy.md` triggers structural alternatives. Compare
-at least two mechanisms with a load-bearing difference before selecting or
-synthesizing the baseline.
+Only when `scope-policy.md` triggers structural alternatives. Candidates must
+disagree on at least one axis. Name the rejected option.
 
-| Candidate | Caller-visible behavior | Organizing model | Ownership, ordering, identity, and failure | Complexity and proof burden | Dangerous false-success response |
+| Candidate (card or flipped axis) | Caller-visible behavior | Organizing model | Axis differences | Complexity and proof burden | Dangerous false-success response |
 |---|---|---|---|---|---|
 
 - Selection or synthesis:
@@ -113,34 +116,37 @@ synthesizing the baseline.
 
 ## Implementation crosswalk
 
-Build fills this in. Plan and Build also record any delegated work here so the
-stage owner can inspect and reconcile it without creating another artifact.
+Build fills this in. Build reads Outcome, Non-goals, Baseline guarantees, Map,
+Planned mechanism baseline, Invariants, Acceptance criteria, and Future change;
+Challenge alternatives are for Review, not for Build to optimize against.
 
 | Obligation, including applicable BGs | Implementation seam | Paths covered | Tests | Deviations |
 |---|---|---|---|---|
 
+- Future change seam:
+- Drift checkpoint (seams inspected, or `none found`):
+- Deleted: (or `Deletion pass: none required`)
+
 ### Delegated Plan and Build ownership (conditional)
 
-Omit when work is not delegated.
+Omit when nothing is delegated.
 
 | Stage and delegate | Bounded scope and seams | Candidate identity and owned paths at dispatch | Success criteria | Owner-inspected evidence and discrepancies | Reconciliation and disposition |
 |---|---|---|---|---|---|
 
 ### Build proof units (conditional)
 
-Include when Build has more than one coherent dependency slice. Record each
-unit before editing it and record its successful local check before starting
-the next. For one indivisible change, use one compact crosswalk note instead.
+Only when Build has more than one coherent dependency slice. Record each unit
+before editing it and its passing local check before starting the next.
 
-| Unit | Coherent dependency slice | Owned paths | Local check before advancement | Result |
+| Unit | Dependency slice | Owned paths | Local check | Result |
 |---|---|---|---|---|
 
 ## Verification evidence
 
-Verify fills this in.
+Verify fills this in. `PASS`, `PARTIAL`, `UNPROVEN`, `BLOCKED`, or
+`NOT_APPLICABLE`. A required production boundary cannot be `PASS` on proxy-only
+evidence.
 
 | Obligation | Evidence | Result | Limitations |
 |---|---|---|---|
-
-Use `PASS`, `PARTIAL`, `UNPROVEN`, `BLOCKED`, or `NOT_APPLICABLE`. A required
-production boundary cannot be `PASS` on proxy-only evidence.

@@ -185,17 +185,30 @@ you explicitly want the artifacts committed.
 One project root or worktree supports one active `.converge/` contract. Use
 separate worktrees for parallel or stacked changes.
 
+## What "done" means
+
+Two checks, no score. The contract passes: every acceptance criterion,
+invariant, and baseline guarantee has evidence. And the brief's one-sentence
+**Future change** has an obvious seam in the candidate. A cut that passes the
+contract but would make that edit spray across the tree is `REPLAN`.
+
+Plan seals a mechanism on four axes (ownership, ordering/commit, identity,
+failure model). Build implements exactly that mechanism in exactly one tree,
+then runs one bounded deletion pass. Review findings must cite a row; style
+notes are follow-ups. There is no numeric score and no multi-model arena.
+
 ## Development principles
 
-- Keep the Standard lane lightweight.
+- Keep the Standard lane lightweight, and Fast lighter: Fast has its own
+  short brief template.
+- Every rule lives in one shared file; skills reference it instead of
+  restating it. The validator budgets the policy each skill loads.
 - Use one evolving Change Brief rather than many duplicated ledgers.
-- Prefer a different model or context for the pre-build Challenge and broad
-  Review.
+- Prefer a different model or context for Challenge and Review; a missing
+  second model never blocks.
 - Do not silently expand scope during review.
 - A third broad review is a signal to replan or split, not the default next
   step.
-- Prefer Fast when its low-risk conditions are supported; do not make a small
-  change pay Standard-lane ceremony.
 - Treat fixture passes as protocol checks, not proof that Converge reduces
   real-world cycles or escaped defects.
 

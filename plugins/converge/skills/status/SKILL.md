@@ -6,25 +6,16 @@ disable-model-invocation: true
 
 # Converge Status
 
-When `.converge/state.yaml` exists, first run
-`python3 "<plugin-root>/scripts/state_gate.py" show`, where `<plugin-root>` is
-the installed plugin directory (`${CLAUDE_PLUGIN_ROOT}` in Claude Code), and
-treat its output as authoritative for budgets, predecessor, and the next
-allowed action.
+If `.converge/state.yaml` exists, run
+`python3 "<plugin-root>/scripts/state_gate.py" show` (`<plugin-root>` is the
+installed plugin directory, `${CLAUDE_PLUGIN_ROOT}` in Claude Code) and treat
+its output as authoritative for budgets, predecessor, and next allowed action.
 
-Read available files under `.converge/` and report:
+Report: lane and status; brief location; candidate identity; broad and closure
+budget use; open and closed finding IDs; archived predecessor if `show` printed
+one; missing or inconsistent artifacts; the single next allowed action. If
+`BLOCKED`, include the reason and resume status.
 
-- Lane and current status
-- Change Brief location
-- Candidate identity
-- Broad and closure review budget usage
-- Open and closed finding IDs
-- Archived predecessor, if `show` printed one
-- Missing or inconsistent artifacts
-- The single next allowed action
-
-Also report that one project root supports one active contract. If the state is
-`BLOCKED`, include the recorded reason and resume status.
-
-Do not modify code or advance the workflow. If no `.converge/` state exists,
-report that `plan` is the normal starting point.
+Do not modify code or advance the workflow. Without `.converge/`, report that
+`plan` is the normal starting point. One project root holds one active
+contract.

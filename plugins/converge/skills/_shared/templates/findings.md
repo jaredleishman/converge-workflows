@@ -14,6 +14,7 @@
 - Lane:
 - Challenge performed: `yes | no`
 - Lane-misjudgment signal: `yes | no`
+- Reviewer family: `other-family | same-family-review`
 - Review limitations:
 
 ## Critical reviewer audit (conditional)
@@ -41,8 +42,8 @@ when the Critical reviewer audit above already records these facts.
 
 ### REV-1 — [P1] Title
 
+- Cites: `AC-n | INV-n | BG-n | Future change | axis: ownership / ordering / identity / failure`
 - Root-cause family:
-- Violated invariant or criterion:
 - Concrete execution sequence:
 - Material impact:
 - Candidate relationship:
@@ -51,6 +52,8 @@ when the Critical reviewer audit above already records these facts.
 - Required behavioral correction:
 
 ## Non-blocking follow-ups
+
+Style and elegance notes go here. They cite nothing and block nothing.
 
 ## Baseline issues
 

@@ -69,6 +69,14 @@ most once per order.
 
 Add the standard and admin refund entry points and the receipt renderer.
 
+
+## Planned mechanism baseline
+
+- Organizing model: one refund helper shared by the standard and admin refund entry points
+- Ownership: each entry point owns the order dictionary it mutates for the duration of the call
+- Ordering / commit: check the refunded flag, clamp to the remaining total, then mutate
+- Identity: orders are identified by the caller-supplied dictionary; the refunded flag is the deduplication rule
+- Failure model: an over-limit or repeated refund refuses before mutation; no partial writes
 ## Invariants
 
 - `INV-1`: A refund never exceeds the order's remaining total.
@@ -80,6 +88,10 @@ Add the standard and admin refund entry points and the receipt renderer.
   entry point runs, then the applied refund equals the remaining total.
 - `AC-2` — Given an already-refunded order, when any refund entry point
   runs, then it refuses to refund again.
+
+## Future change
+
+Adding a refund reason code later should touch only the shared refund helper.
 
 ## Challenge results
 

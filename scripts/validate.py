@@ -140,8 +140,8 @@ def validate() -> None:
 
     required_shared = [
         "workflow.md", "lanes.md", "scope-policy.md", "review-policy.md",
-        "artifact-protocol.md", "candidate-checks.md",
-        "templates/brief.md", "templates/brief-critical.md",
+        "artifact-protocol.md", "candidate-checks.md", "doctrine-cards.md",
+        "templates/brief.md", "templates/brief-fast.md", "templates/brief-critical.md",
         "templates/state.yaml", "templates/findings.md", "templates/closure.md",
     ]
     for rel in required_shared:
@@ -160,6 +160,14 @@ def validate() -> None:
     for phrase in required_policy_text:
         if phrase.lower() not in review_policy.lower():
             fail(f"review policy is missing required phrase: {phrase}")
+
+    for phrase in [
+        "Cites:",
+        "A finding that cites nothing is not a blocker",
+        "same-family-review",
+    ]:
+        if phrase.lower() not in flattened(review_policy):
+            fail(f"review policy is missing row-citation contract: {phrase}")
 
     for phrase in [
         "Timing, cancellation, late completion, and physical-resource ownership",
@@ -195,6 +203,9 @@ def validate() -> None:
         "proxy-only evidence is `UNPROVEN`",
         "Planned-mechanism drift",
         "Identity namespace, collision, or deduplication rule",
+        "Do not open a second worktree or second implementation to resolve drift",
+        "Deletion pass (Build only)",
+        "Deletion pass: none required",
     ]:
         if phrase.lower() not in flattened(candidate_checks):
             fail(f"candidate checks are missing proof/drift contract: {phrase}")
@@ -207,6 +218,9 @@ def validate() -> None:
         "Conditional structural alternatives",
         "Fast work never requires this branch",
         "load-bearing ownership, ordering/commit, identity, or lifecycle decision",
+        "## Mechanism baseline",
+        "cannot seal `PLANNED` with a blank axis",
+        "doctrine-cards.md",
     ]:
         if phrase.lower() not in flattened(scope_policy):
             fail(f"scope policy is missing standalone planning contract: {phrase}")
@@ -223,6 +237,9 @@ def validate() -> None:
         "Do not create a new artifact merely because work was delegated",
         "findings.md # every broad Review, including a clean Review",
         "run the gate's `init` command",
+        "## What \"done\" means",
+        "Future change",
+        "Elegance is Build's deletion pass",
     ]:
         if phrase.lower() not in flattened(workflow):
             fail(f"workflow is missing delegated-ownership contract: {phrase}")
@@ -234,6 +251,8 @@ def validate() -> None:
         "deadline plus external HTTP plus persistent identity plus detached work",
         "does not make one ordinary transaction, queue, or external call Critical",
         "two independent Challenge passes",
+        "promote to Standard via `REPLAN`",
+        "brief-fast.md",
     ]:
         if phrase.lower() not in flattened(lanes):
             fail(f"lane policy is missing compound-boundary contract: {phrase}")
@@ -257,9 +276,26 @@ def validate() -> None:
         "Delegated Plan and Build ownership (conditional)",
         "Build proof units (conditional)",
         "Challenge skipped (Fast)",
+        "Ownership:",
+        "Ordering / commit:",
+        "Identity:",
+        "Failure model:",
+        "## Future change",
+        "Deletion pass: none required",
     ]:
         if phrase.lower() not in flattened(brief_template):
             fail(f"brief template is missing standalone workflow field: {phrase}")
+    brief_fast = (PLUGIN / "skills/_shared/templates/brief-fast.md").read_text(
+        encoding="utf-8"
+    )
+    for phrase in ["Lane: `fast`", "Challenge skipped (Fast)", "## Future change"]:
+        if phrase.lower() not in flattened(brief_fast):
+            fail(f"Fast brief template is missing field: {phrase}")
+    for forbidden in ["Causal grounding trace", "Alternative mechanisms"]:
+        if forbidden.lower() in flattened(brief_fast):
+            fail(f"Fast brief template carries Standard ceremony: {forbidden}")
+    if len(brief_fast.splitlines()) > 80:
+        fail("Fast brief template must stay short (80 lines or fewer)")
     for phrase in [
         "Conditional lifecycle and ownership matrix",
         "Critical proof obligations",
@@ -307,6 +343,10 @@ def validate() -> None:
         "only then begin the next unit",
         "Proof units are not commits, stacks, releases",
         "does not prove the completed candidate",
+        "Reading rule",
+        "Do not optimize against Challenge alternatives",
+        "Exactly one implementation in exactly one tree",
+        "Run the deletion pass",
     ]:
         if phrase.lower() not in flattened(build_skill):
             fail(f"build skill is missing proof-unit contract: {phrase}")
@@ -330,6 +370,7 @@ def validate() -> None:
         "Delegated review ownership (conditional)",
         "Synthesis-owner inspection and discrepancies",
         "Outcome, budget, and finding IDs live in `state.yaml`",
+        "Cites:",
     ]:
         if phrase.lower() not in flattened(findings_template):
             fail(f"findings template is missing reviewer audit field: {phrase}")
@@ -422,6 +463,22 @@ def validate() -> None:
                         f"{brief_path.relative_to(ROOT)} leaks code marker "
                         f"{marker!r} from {expected_path.parent.name}"
                     )
+
+    # Token diet: each skill plus every shared file it names must stay bounded.
+    shared_ref = re.compile(r"\.\./_shared/[A-Za-z0-9_./-]+\.md")
+    budgets = {"plan": 30000, "build": 12000, "verify": 15000, "review": 24000,
+               "remediate": 17000, "close": 12500}
+    for skill_name, budget in budgets.items():
+        skill_path = PLUGIN / f"skills/{skill_name}/SKILL.md"
+        text = skill_path.read_text(encoding="utf-8")
+        total = len(text.encode("utf-8"))
+        for rel in sorted(set(shared_ref.findall(text))):
+            shared_path = PLUGIN / "skills" / rel.removeprefix("../")
+            if not shared_path.is_file():
+                fail(f"{skill_name} skill references missing shared file: {rel}")
+            total += len(shared_path.read_text(encoding="utf-8").encode("utf-8"))
+        if total > budget:
+            fail(f"{skill_name} skill loads {total} bytes of policy; budget is {budget}")
 
     for path in ROOT.rglob("*"):
         if path.is_symlink() and not path.exists():

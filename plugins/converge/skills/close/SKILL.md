@@ -7,61 +7,41 @@ argument-hint: "<remediated candidate or exact head>"
 
 # Converge Close
 
-Paths beginning with `../` resolve against this skill's installed folder,
-`<plugin-root>/skills/close/` (`${CLAUDE_PLUGIN_ROOT}/skills/close/` in Claude
-Code). `.converge/` paths resolve against the project root.
+`../_shared/` is relative to this skill folder; `.converge/` is at the project
+root; `<plugin-root>` is the installed plugin directory.
 
-Read:
+Read `.converge/findings.md`, `.converge/state.yaml`, the sealed contract and
+crosswalk sections of `.converge/brief.md`, the Round 2 and Loop breaker
+sections of `../_shared/review-policy.md`, `../_shared/artifact-protocol.md`,
+and `../_shared/templates/closure.md`.
 
-- `.converge/brief.md`
-- `.converge/state.yaml`
-- `.converge/findings.md`
-- `../_shared/workflow.md`
-- `../_shared/review-policy.md`
-- `../_shared/artifact-protocol.md`
-- `../_shared/templates/closure.md`
+1. Run `python3 "<plugin-root>/scripts/state_gate.py" check close`; stop with
+   its guidance if it refuses. It confirms `READY_FOR_CLOSURE`, unused closure
+   budget, open Round 1 IDs, and an unchanged candidate. For a pull request,
+   run `candidate check --current-head <sha>`. Confirm the Remediation Report
+   exists and Verify reran the invalidated obligations.
+2. Review only the prior findings, the remediation range, the named invariant
+   families and sibling paths, and code the fix introduced or invalidated. Do
+   not restart a full review of untouched code.
+3. Close or reject each prior finding with concrete evidence.
+4. Classify every new issue as `FIX_INTRODUCED`, `ORIGINAL_MISS`,
+   `NEW_EVIDENCE`, `SCOPE_EXPANSION`, or `OUT_OF_SCOPE_FOLLOW_UP` using the
+   definitions and Round 1 reachability rules in `review-policy.md`. Each new
+   blocking issue cites a row.
+5. Apply the loop breaker: a distinct blocking `ORIGINAL_MISS`, blocking
+   `NEW_EVIDENCE`, or material `SCOPE_EXPANSION` is `REPLAN` or `SPLIT`, not a
+   third review. Exception: new evidence that only proves an already-open
+   Round 1 family incomplete, with a small correction inside the sealed
+   mechanism, keeps that ID open for the one targeted confirmation. Never
+   demote a candidate-caused baseline regression to a follow-up.
+6. Write `.converge/closure.md` from the template without copying budget or
+   disposition. Run `candidate check` again. Record one outcome via
+   `set-status`: `CLOSED`; `TARGETED_FIX --finding CLOSE-1` for a small
+   fix-introduced defect; `TARGETED_FIX --finding REV-1` to keep an incomplete
+   family open; `REPLAN` or `SPLIT` with finding IDs; or `BLOCKED --reason`.
+   The gate consumes closure budget on a successful outcome, closes prior IDs
+   not repeated on the outcome, and refuses if `closure.md` is missing.
 
-Then:
-
-1. Run `python3 "<plugin-root>/scripts/state_gate.py" check close` and stop
-   with its guidance if it refuses; it confirms the state is
-   `READY_FOR_CLOSURE`, closure budget is unused, Round 1 finding IDs are open,
-   and the exact candidate is unchanged. For a pull request, resolve its head
-   again and run `candidate check --current-head <sha>`. Confirm remediation was
-   applied as one root-cause-grouped batch (the Remediation Report in
-   `findings.md`) and that Verify reran the invalidated obligations.
-2. Review only the prior findings, remediation range, named invariant families,
-   named sibling paths, and code introduced or invalidated by the fix.
-3. Do not restart an unconstrained full review of untouched code.
-4. Close or reject each prior finding with concrete evidence.
-5. Classify every new issue as `FIX_INTRODUCED`, `ORIGINAL_MISS`,
-   `NEW_EVIDENCE`, `SCOPE_EXPANSION`, or `OUT_OF_SCOPE_FOLLOW_UP`.
-   Record whether it was reachable at the Round 1 candidate and cite the
-   remediation-range evidence. `ORIGINAL_MISS` requires Round 1 reachability
-   plus a violated sealed obligation or non-waivable baseline guarantee;
-   `FIX_INTRODUCED` requires that it was not reachable until remediation;
-   `NEW_EVIDENCE` requires the decisive evidence to have been genuinely
-   unavailable at Round 1 and must not also be labeled `ORIGINAL_MISS`.
-6. Apply the loop breaker. A distinct blocking `ORIGINAL_MISS`, blocking
-   `NEW_EVIDENCE`, or material `SCOPE_EXPANSION` means `REPLAN` or `SPLIT`, not
-   Review Round 3. Exception: when new evidence only proves an already-open
-   Round 1 family incomplete and the correction stays small and inside the
-   sealed mechanism, keep that ID open for the one targeted confirmation;
-   otherwise replan or split. Never demote a candidate-caused baseline
-   regression to a follow-up.
-7. Write `.converge/closure.md` from the template without copying budget or
-   disposition. Then run `candidate check` again; for a pull request, resolve
-   and pass its current head again. Record one outcome through the gate:
-   `CLOSED`; `TARGETED_FIX --finding CLOSE-1` for a small remediation-caused
-   defect; `TARGETED_FIX --finding REV-1` to keep an incomplete prior family
-   open; `REPLAN` or `SPLIT` with finding IDs for an original miss or scope
-   expansion or distinct blocking new evidence; or `BLOCKED --reason ...` when
-   evidence is unavailable. A successful budgeted Close outcome consumes
-   closure budget in the same state-file update; `BLOCKED` does not. It closes
-   prior IDs that are not repeated on the outcome and keeps repeated IDs open.
-   The gate refuses the outcome if `closure.md` is missing. Never edit budget
-   or finding-list fields in `state.yaml` by hand.
-
-A small fix-introduced issue receives at most one targeted Remediate and Verify
-confirmation. Targeted confirmation cannot return to another fix; it closes,
-replans, splits, or blocks. It never authorizes another broad or closure review.
+A fix-introduced issue gets at most one targeted Remediate and one Verify
+confirmation, which then closes, replans, splits, or blocks. Nothing here
+authorizes another broad or closure review.

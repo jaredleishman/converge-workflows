@@ -1,126 +1,96 @@
-# Review convergence policy
+# Review policy
 
 Converge permits one broad review and, when needed, one delta closure review.
 
 ## Round 1: broad review
 
-This is the only unrestricted post-implementation review.
+The only unrestricted post-implementation review. The reviewer:
 
-The reviewer must:
-
-1. Resolve the exact candidate and the sealed Change Brief.
-2. Review contract compliance, changed behavior, and connected sibling paths.
-3. Continue after finding the first blocker.
-4. Generalize each finding to its violated invariant or behavioral contract.
-5. Inspect all sibling entry points and consumers governed by that same root
-   cause before returning the finding.
-6. Return one deduplicated, batch-complete finding set.
-7. Separate blockers, non-blocking follow-ups, baseline issues, and proposed
+1. Resolves the exact candidate and the sealed brief.
+2. Reviews contract compliance, changed behavior, and connected sibling paths.
+3. Continues after the first blocker and returns one deduplicated,
+   batch-complete set.
+4. Generalizes each finding to its violated invariant or contract row and
+   inspects every sibling entry point and consumer governed by that root cause
+   before reporting it.
+5. Separates blockers, non-blocking follow-ups, baseline issues, and proposed
    contract amendments.
-8. Remain read-only unless the user separately authorizes remediation.
+6. Stays read-only.
 
-For a Fast change that skipped Challenge, a supported P1 is also a
-lane-misjudgment signal. Record the signal, but do not inflate severity or add a
-review round because of it.
+### Findings cite rows
 
-For Critical work, parallel reviewers may inspect the same exact candidate.
-Synthesize all results before any fix is made. The parallel set consumes one
-broad-review budget.
+Every finding carries `Cites:` naming an AC, INV, BG, the Future change, or a
+mechanism axis. A finding that cites nothing is not a blocker; it may be a
+follow-up or a proposed amendment. Style or elegance-only observations are
+follow-ups and spend no review effort. "The Future change has no home" is a
+load-bearing miss: it goes to the remediate family or `REPLAN`, never to a
+style note.
+
+### Blocker standard
+
+A P0/P1 blocker needs all of: a concrete reachable execution sequence;
+material user, money, data, authorization, operational, or external-effect
+impact; a violated invariant, acceptance criterion, or regression boundary;
+evidence the candidate introduces, exposes, or materially worsens it;
+relevance to the actual deployment envelope; a regression or deterministic
+proof sketch. Without those it is a question or follow-up.
+
+### Reviewer choice
+
+Prefer a different model family from the one that built the candidate. If
+only one exists, record `same-family-review` in the findings and continue; a
+missing second family never blocks Review.
 
 ### Critical same-candidate lenses
 
-For lifecycle-heavy Critical work, default to these complementary primary
-lenses:
+For lifecycle-heavy Critical work, default to these complementary lenses:
 
 1. Timing, cancellation, late completion, and physical-resource ownership
 2. Persistent identity, collision/deduplication, transactions, and
    external-effect integrity
 3. State lifecycle, recovery, promotion, and test realism or proof fidelity
 
-The lens is an emphasis, not a silo. Every reviewer reads the sealed contract,
-inspects the complete candidate, and performs a cross-lens sweep for material
-failures outside the primary lens. Tailor or combine lenses when the Critical
-risk is instead authorization, cryptography, migration, or another mechanism;
-record why the chosen set covers the actual failure model.
-
-Keep independent reports hidden from one another until they finish. Each report
-must record reviewer identity, repository, base and head or worktree
-fingerprint, acquisition method, primary lens, full-candidate sweep, and
-limitations. If candidate identity differs, do not synthesize or spend the
-broad budget; resolve the mismatch or record `BLOCKED`. The root workflow
-deduplicates root-cause families and records one batch-complete disposition.
-
-## Blocker standard
-
-A P0/P1 blocker requires:
-
-- A concrete reachable execution sequence
-- Material user, money, data, authorization, operational, or external-effect
-  impact
-- A violated invariant, acceptance criterion, or regression boundary
-- Evidence that the candidate introduces, exposes, or materially worsens it
-- Relevance to the candidate's actual deployment envelope
-- A regression or deterministic proof sketch
-
-A plausible concern without this evidence is a question or follow-up, not a
-blocking P1.
+A lens is an emphasis, not a silo. Every reviewer reads the sealed contract,
+inspects the complete candidate, and does a full-candidate sweep for failures
+outside the lens. Tailor the set with a recorded rationale when the risk is
+authorization, cryptography, migration, or another shape. Keep reports hidden
+from one another until they finish; each records reviewer identity,
+repository, base/head or fingerprint, acquisition method, primary lens, sweep,
+and limitations. If candidate identity differs, do not synthesize; resolve it
+or record `BLOCKED`. The root workflow deduplicates root-cause families and
+records one disposition. The parallel set consumes one broad-review budget.
 
 ## Remediation
 
-The `remediate` skill owns this step. Fix the complete finding batch by
-root-cause family. Do not patch only the cited example. For each finding record
-in the Remediation Report:
-
-- Violated invariant
-- Affected sibling paths
-- Shared root cause
-- Common fix seam
-- Regressions
-- Paths intentionally unchanged
-
-Material implementation changes may invalidate additional acceptance criteria
-or plan assumptions; rerun Verify before closure.
+The `remediate` skill fixes the complete batch by root-cause family at the
+common seam, sweeping every named sibling. The Remediation Report records per
+finding: the cited row, affected sibling paths, shared root cause, common fix
+seam, regressions added, and paths intentionally unchanged. Rerun Verify
+before closure.
 
 ## Round 2: delta closure
 
-Closure validates only:
+Closure validates only the prior finding batch, the remediation range, the
+invariant families those findings named, sibling paths in the remediation
+report, and paths the fix introduced or invalidated. It does not restart a full
+review.
 
-- The prior finding batch
-- The remediation range
-- The invariant families named by those findings
-- Sibling paths named in the remediation report
-- New paths introduced or invalidated by the fix
+Classify every new issue against the Round 1 candidate and remediation range:
 
-It does not restart an unconstrained full-PR review.
-
-Classify every new issue as:
-
-- `FIX_INTRODUCED`
-- `ORIGINAL_MISS`
-- `NEW_EVIDENCE`
-- `SCOPE_EXPANSION`
-- `OUT_OF_SCOPE_FOLLOW_UP`
-
-Use the Round 1 candidate and remediation range as the temporal boundary:
-
-- `FIX_INTRODUCED` — the failure was not reachable at the Round 1 candidate and
-  became reachable because of the remediation range.
-- `ORIGINAL_MISS` — the failure was reachable and supportable from evidence
-  reasonably available at the Round 1 candidate, and it violated the sealed
-  brief or a non-waivable baseline guarantee, but Round 1 did not report it.
-- `NEW_EVIDENCE` — the relevant behavior existed at Round 1, but evidence not
-  reasonably available then now supports a materially different disposition.
-  Record the Round 1 reachability and why the decisive evidence was genuinely
-  unavailable; do not also label it `ORIGINAL_MISS`.
-- `SCOPE_EXPANSION` — the concern requires behavior outside the sealed brief and
-  baseline guarantees, or arises from remediation that materially expanded the
-  mechanism.
+- `FIX_INTRODUCED` — not reachable at the Round 1 candidate; reachable because
+  of the remediation range.
+- `ORIGINAL_MISS` — reachable and supportable from evidence reasonably
+  available at Round 1, violating the sealed brief or a baseline guarantee, but
+  not reported.
+- `NEW_EVIDENCE` — existed at Round 1, but decisive evidence was genuinely
+  unavailable then. Record why; do not also label it `ORIGINAL_MISS`.
+- `SCOPE_EXPANSION` — needs behavior outside the sealed brief and baseline
+  guarantees, or arises from remediation that expanded the mechanism.
 - `OUT_OF_SCOPE_FOLLOW_UP` — the candidate did not introduce, expose, or
-  materially worsen the concern.
+  materially worsen it.
 
-Do not select a cheaper classification because its workflow outcome is more
-convenient. Record the Round 1 reachability evidence for every new blocking
-issue.
+Do not pick a cheaper classification because its outcome is more convenient.
+Record Round 1 reachability evidence for every new blocking issue.
 
 ## Loop breaker
 
@@ -128,28 +98,21 @@ After closure:
 
 - Prior findings closed, no new blocker → `CLOSED`
 - Small fix-introduced defect → one targeted fix and one targeted confirmation
-- Prior root-cause family incomplete → keep its Round 1 finding ID open, finish
-  the family, then targeted confirmation
+- Prior family incomplete → keep its Round 1 ID open, finish it, then targeted
+  confirmation
 - New distinct original P1 family → `REPLAN` or `SPLIT`
-- Blocking `NEW_EVIDENCE` for a distinct family → `REPLAN` or `SPLIT`; if it
-  only proves a named Round 1 family incomplete and the correction remains
-  small and inside the sealed mechanism, keep that ID open and use the one
-  targeted confirmation; otherwise `REPLAN` or `SPLIT`
+- Blocking `NEW_EVIDENCE` → `REPLAN` or `SPLIT`, unless it only proves a named
+  Round 1 family incomplete and the correction stays small and inside the
+  sealed mechanism; then keep that ID open for the one targeted confirmation
 - Material scope expansion → `REPLAN` or `SPLIT`
-- Pre-existing baseline weakness or unrelated hardening that the candidate did
-  not introduce, expose, or materially worsen → follow-up, not a blocker
+- Pre-existing weakness the candidate did not worsen → follow-up
 
 A candidate-caused violation of a non-waivable baseline guarantee never becomes
-a follow-up merely because the brief omitted it. A non-blocking
-`NEW_EVIDENCE` issue may be recorded as a follow-up, but blocking new evidence
-does not qualify for a cheap targeted fix unless it belongs to an already-open
-Round 1 family.
-
+a follow-up because the brief omitted it.
 Do not begin a third broad review automatically.
 
 The targeted path is finite. Close consumes its one closure budget and records
-`TARGETED_FIX`. Remediate may change only the finding IDs kept open by Close and
-then records `READY_FOR_TARGETED_CONFIRMATION`. Verify checks only those issues,
-their named siblings, and invalidated obligations. It ends `CLOSED`, `REPLAN`,
-`SPLIT`, or `BLOCKED`; it cannot return to another targeted fix. No broad or
-closure budget is reset.
+`TARGETED_FIX`. Remediate may change only the IDs Close kept open and records
+`READY_FOR_TARGETED_CONFIRMATION`. Verify checks only those issues, their named
+siblings, and invalidated obligations, then ends `CLOSED`, `REPLAN`, `SPLIT`,
+or `BLOCKED`. It cannot return to another fix. No budget resets.

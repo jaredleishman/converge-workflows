@@ -7,134 +7,92 @@ argument-hint: "<request, issue, or existing plan>"
 
 # Converge Plan
 
-Paths beginning with `../` resolve against this skill's installed folder,
-`<plugin-root>/skills/plan/` (`${CLAUDE_PLUGIN_ROOT}/skills/plan/` in Claude
-Code). `.converge/` paths resolve against the project root.
+`../_shared/` is relative to this skill folder (`${CLAUDE_PLUGIN_ROOT}/skills/plan/`
+in Claude Code). `.converge/` is at the project root. `<plugin-root>` is the
+installed plugin directory.
 
-Plan runs in two phases. Phase 1 is a conversation that ends with the user
-explicitly approving a direction. Phase 2 turns the approved direction into
-the contract. Do not start Phase 2 — no deep mapping, no `.converge/` files,
-no Challenge pass — before Phase 1 ends in approval.
+Plan has two phases. Phase 1 is a conversation that ends with the user
+explicitly approving a direction. Phase 2 turns that direction into the
+contract. Do not map deeply, Challenge, or write `.converge/` before approval.
 
 ## Phase 1 — Interview
 
-Read:
+Read `../_shared/workflow.md` and `../_shared/lanes.md`.
 
-- `../_shared/workflow.md`
-- `../_shared/lanes.md`
+1. Skim the repository just enough to ask informed questions: its instructions
+   and the obviously relevant modules. This is reconnaissance, not the Map.
+2. Interview in rounds of at most three questions, each round shaped by the
+   last. Prefer concrete, code-grounded questions ("X currently happens on
+   retry; keep that?") over open ones. Use the host's structured-question tool
+   when one exists. Resolve whatever the request leaves ambiguous among:
+   observable outcome; non-goals; constraints; failure model; the examples the
+   user would accept as proof; appetite and natural split candidates. Skip
+   questions the request or repository already answers.
+3. When the direction feels settled, present a Direction Summary: outcome,
+   non-goals, key constraints, the rough mechanism (including any axis that is
+   genuinely open), the one likely Future change, and the proposed lane. Say
+   whether the alternatives branch will run; the user may ask to "search the
+   cut" on any Standard change. Ask the user to approve, adjust, or redirect.
+4. Iterate until the user gives an explicit yes. Silence is not approval. On a
+   redirect, restart from the correction rather than defending the summary.
 
-1. Skim only enough of the repository (its instructions plus the obviously
-   relevant modules) to ask informed questions. This is reconnaissance, not
-   the Map.
-2. Interview the user about what they actually want. Ask in small rounds of
-   at most three questions, and let each round's answers shape the next.
-   Prefer concrete questions grounded in what the code actually does
-   ("X currently happens on retry — keep that or change it?") over
-   open-ended ones. Use the host's structured-question tool when one exists;
-   otherwise ask in chat. Across rounds, resolve whichever of these the
-   request leaves ambiguous:
-   - Observable outcome: what behavior changes, and for whom
-   - Non-goals: nearby behavior that must not change
-   - Constraints: compatibility, rollout, performance, data, deadlines
-   - Failure model: dangerous false successes and worst-case impact
-   - Success judgment: the examples the user would accept as proof
-   - Appetite: smallest useful version versus the full ask, and any
-     natural split candidates
-   Skip questions whose answers are already explicit in the request or
-   unambiguous in the repository. The goal is to surface real decisions,
-   not to run a questionnaire.
-3. When the direction feels settled, present a Direction Summary in chat: a
-   short restatement of outcome, non-goals, key constraints, the rough
-   mechanism, and the proposed lane. Ask the user to approve, adjust, or
-   redirect. The summary is a proposal for discussion, not the contract.
-4. Iterate — more questions, revised summary — until the user gives an
-   explicit yes to the Direction Summary. Silence or absence of objection
-   is not approval. If the user redirects, restart the round from their
-   correction rather than defending the previous summary.
-
-Phase 1 may collapse to a single confirmation of the Direction Summary only
-when the request is trivially unambiguous or the user explicitly asks to
-skip the interview ("just plan it"). Even then, show the summary and get the
-yes before Phase 2.
-
-Bias toward the Fast lane when repository evidence satisfies every Fast
-condition. Fast still needs explicit Direction Summary approval, but do not
-manufacture interview rounds after the direction is already clear.
+Collapse Phase 1 to one confirmation only when the request is trivially
+unambiguous or the user says to skip the interview. Even then, show the summary
+and get the yes. Bias toward Fast when repository evidence supports every Fast
+condition; do not manufacture rounds after the direction is clear.
 
 ## Phase 2 — Contract
 
-Read:
+Fast: read only `../_shared/templates/brief-fast.md` and do steps 1, 2, 3, 4,
+9, and 10. Standard and Critical: read `../_shared/scope-policy.md` and
+`../_shared/templates/brief.md`, adding `../_shared/templates/brief-critical.md`
+sections only when Critical or a Standard exception needs them, and
+`../_shared/doctrine-cards.md` only if the alternatives branch runs.
 
-- `../_shared/scope-policy.md`
-- `../_shared/artifact-protocol.md`
-- `../_shared/templates/brief.md`
-- `../_shared/templates/brief-critical.md`
-
-1. Read the repository's instructions and obtain the smallest relevant code
-   context beyond the Phase 1 skim.
+1. Read the repository's instructions and the smallest relevant code context
+   beyond the Phase 1 skim.
 2. Map entry points, sources of truth, consumers, state mutations, external
    effects, async/retry paths, concurrency boundaries, and rollout boundaries.
-   For Standard and Critical work, apply the causal-grounding completion rule
-   in `scope-policy.md` to every materially distinct path. Do not stop at a
-   category or file inventory. Reuse an applicable Critical lifecycle matrix
-   instead of duplicating its traces.
-3. Confirm the lane proposed in the Direction Summary against the actual
-   impact and failure model. Apply the compound-boundary screen in `lanes.md`
-   and record a short lane rationale. When Standard relies on an exception,
-   enumerate its boundaries, containment, recovery, ownership, and falsifying
-   evidence using the Standard exception fields in `brief-critical.md`. Tell
-   the user if mapping changed the proposed lane.
-4. Draft the smallest coherent proposed change and enough of the candidate
-   mechanism to Challenge it, but do not finalize the Planned mechanism
-   baseline yet. Include the shared baseline guarantees as non-waivable
-   regression boundaries. Fast uses at most two important invariants and three
-   acceptance criteria; Standard uses at most four important invariants and six
-   acceptance criteria.
-5. When `scope-policy.md` triggers the Critical lifecycle/ownership matrix,
-   copy those sections from `brief-critical.md` into the brief. Add Critical
-   proof obligations that distinguish direct or boundary-faithful evidence from
-   proxies. Omit both sections when their trigger does not apply; do not burden
-   a simple Standard brief with Critical ceremony.
+   For Standard and Critical, apply causal grounding completion from
+   `scope-policy.md` to every materially distinct path. Reuse an applicable
+   Critical lifecycle matrix instead of duplicating it.
+3. Confirm the lane against the actual impact and failure model using the
+   compound-boundary screen in `lanes.md`; record a short rationale. A Standard
+   exception uses the fields in `brief-critical.md`. Tell the user if mapping
+   changed the lane.
+4. Draft the smallest coherent proposed change and enough of the mechanism to
+   Challenge it, but do not finalize the Planned mechanism baseline yet.
+   Include the baseline guarantees. Respect the lane's invariant and AC caps.
+   Write the Future change sentence.
+5. When `scope-policy.md` triggers the Critical lifecycle matrix, copy those
+   sections and the proof obligations from `brief-critical.md`. Otherwise omit
+   them.
 6. After Map, apply the conditional structural-alternatives rule in
-   `scope-policy.md`. When triggered, Challenge at least two mechanisms before
-   finalizing the baseline. They must differ in a load-bearing ownership,
-   ordering/commit, identity, or lifecycle decision; cosmetic variants do not
-   count. When it is not triggered, record the reason briefly and continue
-   without manufacturing alternatives.
-7. Fast skips Challenge unless mapping showed the change is no longer Fast;
-   if that happens, return to lane selection instead of Challenge. Record
-   `Challenge skipped (Fast)` in the brief. Standard uses one pass. Critical
-   uses two independent passes with hidden findings and different contexts or
-   lenses; synthesize only after both finish and record the independent-pass
-   table from `brief-critical.md`. If the host cannot provide the second
-   independent context, record the limitation and obtain an explicit user
-   decision before calling Challenge complete. Apply the delegated
-   stage-ownership rule in `workflow.md` whenever a pass is delegated.
-8. Select or synthesize the mechanism after Challenge. Finalize a Planned
-   mechanism baseline that names one coherent organizing model plus the
-   ownership, ordering, identity, and failure-model decisions. Amend the
-   contract with supported Challenge findings, then decide whether the work has
-   one proof story or should be split. If mapping or Challenge contradicts the
-   approved direction, return to Phase 1 with what you found instead of silently
-   changing the direction.
+   `scope-policy.md`. When it triggers (or the user asked to search the cut),
+   Challenge at least two mechanisms that disagree on an axis; cosmetic
+   variants do not count. Use a doctrine card or one flipped axis for the
+   second candidate. Otherwise record the reason in one line.
+7. Fast skips Challenge; if mapping showed the change is no longer Fast,
+   return to lane selection. Standard uses one Challenge pass. Critical uses
+   two independent passes with hidden findings and different contexts or
+   lenses, synthesized only after both finish and recorded in the
+   `brief-critical.md` table; if the host cannot provide a second context,
+   record the limitation and get an explicit user decision. Apply delegated
+   stage ownership from `workflow.md` when a pass is delegated.
+8. Select or synthesize the mechanism after Challenge. Finalize the Planned
+   mechanism baseline: one coherent organizing model plus all four axes
+   (ownership, ordering/commit, identity, failure model). Standard and Critical
+   cannot seal with a blank axis. Amend the contract with supported Challenge
+   findings and decide `ONE_CHANGE` or `SPLIT`. If Map or Challenge contradicts
+   the approved direction, return to Phase 1 with what you found.
 9. Run `python3 "<plugin-root>/scripts/state_gate.py" init --lane <lane>`.
-   Missing `.converge/` creates it. `PLANNING` is reused. `CLOSED`, `REPLAN`,
-   or `SPLIT` is archived under `.converge/archive/` and replaced. Any other
-   live status is refused. Then write `.converge/brief.md` from the Fast or
-   Standard template, copying Critical addendum sections only when the lane
-   needs them. Leave the review-budget fields exactly as templated; only the
-   state gate changes them. Add `.converge/` to `.git/info/exclude` when
-   appropriate; do not silently change committed ignore files.
-10. End with `PLANNED`, `SPLIT`, or `BLOCKED`, recorded via
-   `python3 "<plugin-root>/scripts/state_gate.py" set-status <STATUS> --stage plan`.
-   `PLANNED` requires the brief file to exist first. `BLOCKED` also requires
-   `--reason`. Ending `PLANNED` seals the contract sections of the brief (see
-   `workflow.md`); later changes to them are labeled contract amendments that
-   return through this skill.
+   It creates `.converge/`, reuses `PLANNING`, archives a finished contract,
+   and refuses any other live status. Write `.converge/brief.md` from the
+   lane's template. Leave budget fields to the gate. Add `.converge/` to
+   `.git/info/exclude` when appropriate; do not edit committed ignore files.
+10. End with `set-status PLANNED|SPLIT|BLOCKED --stage plan`. `PLANNED`
+    requires the brief; `BLOCKED` requires `--reason`. `PLANNED` seals the
+    contract sections (`workflow.md`); later changes are contract amendments
+    that return here.
 
-Do not implement. If the user asked to continue into implementation after a
-sealed `PLANNED` contract, tell them to run the Build skill. Do not implement
-inside Plan.
-
-One project root or worktree supports one active `.converge/` contract. Direct
-parallel or stacked changes to separate worktrees instead of overwriting state.
+Do not implement. After `PLANNED`, tell the user to run Build.

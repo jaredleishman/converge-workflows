@@ -5,12 +5,20 @@
     "Outcome",
     "Non-goals",
     "Planned mechanism baseline",
+    "Future change",
     "Split decision"
   ],
   "required_phrases": [
-    "Lane: `standard`"
+    "Lane: `standard`",
+    "Ownership:",
+    "Ordering / commit:",
+    "Identity:",
+    "Failure model:"
   ],
-  "required_any_phrases": ["ONE_CHANGE", "SPLIT"],
+  "required_any_phrases": [
+    "ONE_CHANGE",
+    "SPLIT"
+  ],
   "forbidden_phrases": [
     "lifecycle and ownership matrix",
     "critical proof obligations"

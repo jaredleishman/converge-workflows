@@ -13,6 +13,13 @@ bounding post-implementation review.
 - `close` — the single delta-only closure review
 - `status` — show workflow state and next action
 
+Shared policy lives in `skills/_shared/`: `workflow.md` (flow, sealing,
+delegation), `lanes.md`, `scope-policy.md` (Plan), `candidate-checks.md`
+(Build, Verify, Remediate), `review-policy.md` (Review, Remediate, Close),
+`artifact-protocol.md` (gate and candidate identity), `doctrine-cards.md`
+(Challenge alternatives only), and the templates. Each rule lives in exactly
+one file.
+
 Installed skill names are namespaced by the host where applicable, for example
 `/converge:plan` in Claude Code.
 
